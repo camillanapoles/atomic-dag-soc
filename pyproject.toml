@@ -75,7 +75,6 @@ omit = [
     "src/atomic_dag/cli.py",      # Sprint 1: implementa comandos reais
     "src/atomic_dag/dag.py",      # Sprint 1: compute_dag_levels
     "src/atomic_dag/gate.py",     # Sprint 1: validate_gate
-    "src/atomic_dag/parser.py",   # Sprint 1: parse_atom
 ]
 
 [tool.ruff]
