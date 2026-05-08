@@ -73,7 +73,6 @@ source = ["atomic_dag"]
 # Cada sprint subsequente remove entradas desta lista conforme implementa.
 omit = [
     "src/atomic_dag/cli.py",      # Sprint 1: implementa comandos reais
-    "src/atomic_dag/gate.py",     # Sprint 1: validate_gate
 ]
 
 [tool.ruff]
