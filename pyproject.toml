@@ -71,9 +71,7 @@ addopts = "-ra --cov=atomic_dag --cov-report=term-missing --cov-fail-under=80"
 source = ["atomic_dag"]
 # Sprint 0 exclui módulos que são stubs (NotImplementedError).
 # Cada sprint subsequente remove entradas desta lista conforme implementa.
-omit = [
-    "src/atomic_dag/cli.py",      # Sprint 1: implementa comandos reais
-]
+omit = []
 
 [tool.ruff]
 line-length = 100
