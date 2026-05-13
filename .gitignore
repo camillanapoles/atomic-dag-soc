@@ -38,3 +38,15 @@ state.json
 
 # Temp files from atomic writes should never be committed
 .*.tmp
+
+# Knowledge: scraping dumps, encoding-corrupted files, and .txt drafts
+knowledge/*.txt
+knowledge/camillanapoles_*
+knowledge/Sistema_de_Processamento_de_Documenta*
+
+# Session/planning artifacts not for version control
+.claude/
+.omc/
+.mymemo.md
+_meta/
+DagFlow/
