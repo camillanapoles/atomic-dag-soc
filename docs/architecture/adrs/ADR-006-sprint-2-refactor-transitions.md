@@ -1,6 +1,6 @@
 # ADR-006: Sprint 2 Refactor — `transitions` Module Specification
 
-**Status:** Accepted (Phase 2.A — approved before any `transitions.py` code)
+**Status:** Accepted (Phase 2.A — approved before any `transitions.py` code; amended in-place via fix-forward on 2026-05-17 to address Copilot review on PR #1)
 **Date:** 2026-05-17
 **Deciders:** atomic-dag contributors
 **Supersedes:** none
@@ -23,9 +23,9 @@ A prior design iteration proposed a two-phase WAL (an `intent` event before the 
 
 ```
 parse_atom(filepath) -> Atom
+gate.validate_gate(atom.meta) -> GateResult            # ALWAYS called (D4/RF-2.5)
 fsm.validate_transition(atom.state, action) -> (valid, new_state)
     invalid  -> return error, exit 1, ZERO disk write, ZERO WAL entry
-gate.validate_gate(atom.meta) -> GateResult            # ALWAYS called (D4/RF-2.5)
 route resolution:
     action == "check":  gate.passed -> to_state = "verified"
                         not passed  -> to_state = "returned"   (both exit 0)
@@ -37,6 +37,8 @@ wal.log_event(wal_path, { ... })                       # SINGLE event, AFTER wri
 
 The WAL event is written **after** the atomic disk write, as a single record. This is the ordering mandated by §6.2 and confirmed by ADR-003 §Lesson 3.
 
+**The gate is computed before the FSM check**, preserving the ADR-003 §Lesson 3 ordering verbatim (`parse → validate_gate → is_valid_transition → atomic_write → log_event_to_wal`) and making the "ALWAYS called" claim of D4 literally true: even transitions that the FSM will subsequently reject invoke the gate first. The gate result on the FSM-invalid path is discarded with the early-return and no WAL entry is emitted (per RF-2.3). The cost is trivial — `gate.validate_gate` is a pure function over the `atom.meta` dict with no I/O — and the benefit is fidelity to the established invariant: tradução fiel takes precedence over paralela optimisation. An earlier draft of D1 inverted this order (FSM-then-gate) as a micro-optimisation; that inversion was reverted on 2026-05-17 because it (a) contradicted ADR-003 §Lesson 3, (b) contradicted the §6.2 sequence diagram verbatim, and (c) made the D4 "ALWAYS called" claim self-contradictory with the FSM-invalid early-return.
+
 ### Idempotency by replay (D2)
 
 Before acting, `read_events(wal_path)` is consulted. If a `transition` event already matches `(atom_id, from_state, to_state, action)` **and** the on-disk `.md` is already in `to_state`, the function returns `TransitionResult(idempotent=True)` with exit 0 and performs **zero** disk writes and **zero** new WAL entries. After a replay, `read_events` returns the original single entry (length unchanged) — this is the RF-2.4 falsifiability criterion.
@@ -44,6 +46,8 @@ Before acting, `read_events(wal_path)` is consulted. If a `transition` event alr
 ### WAL record schema (D4)
 
 A single event of type `transition` with mandatory fields: `atom_id`, `from_state`, `to_state`, `action`, `gate_result`, `duration_ms`. `timestamp` (ISO-8601 UTC) is added automatically by `wal.log_event`. `gate_result` is **non-optional**: the gate is always invoked even for actions that do not determine routing, because RF-2.5 requires a complete `gate_result` in every WAL entry.
+
+`gate_result` is serialised as a JSON object with the exact shape `{passed: bool, gold_score: int, pqms_score: float, vvv_score: float, reasons: [str, ...]}` — mirroring the public fields of the `gate.GateResult` frozen dataclass. The conversion is performed by `execute_transition` before calling `wal.log_event` (which uses `json.dumps` and does not accept arbitrary dataclasses; passing a `GateResult` directly would raise `TypeError`). `reasons` is logged verbatim, without redaction or truncation — full auditability by design.
 
 ### `TransitionResult` type (D5)
 
@@ -55,7 +59,7 @@ A frozen dataclass with `__bool__ = success`, fields `atom_id, from_state, to_st
 
 ### Concurrency posture (D8)
 
-Per-atom locking is **deferred to Sprint 5**. FM-01 (concurrent WAL writes) is *mitigated* — not closed — by `O_APPEND` semantics plus the guarantee that event payloads stay below `PIPE_BUF`, making line-level appends atomic on POSIX. `TECHNICAL_DEBT.md` records FM-01 as mitigated with the Sprint 5 closure plan. No new locking code is introduced in Sprint 2.
+Per-atom locking is **deferred to Sprint 5**. FM-01 (concurrent WAL writes) is *mitigated* — not closed — by `O_APPEND` semantics plus the guarantee that event payloads stay below `PIPE_BUF`, making line-level appends atomic on POSIX. `TECHNICAL_DEBT.md` **will record** FM-01 as mitigated with the Sprint 5 closure plan; the entry lands in the Phase 2.F closing commit (commit 13 of the Sprint 2 sequence) alongside the `cov-fail-under` 80→95 bump. No new locking code is introduced in Sprint 2.
 
 ### Regression invariant — "disk never lags the WAL" (D11)
 
@@ -69,7 +73,9 @@ For every `transition` event in the WAL, the on-disk `.md` is in a state equal t
 
 ### Nomenclature
 
-There is **no `state.json`** anywhere in the design. An atom is a `.md` file with `state` in its YAML frontmatter. State mutation is a surgical frontmatter edit via `parser.replace_state_in_frontmatter(content, new_state)`, then a full-file rewrite via `writer.write_atomic`. WAL location is `<project>/.atomic-dag/wal.jsonl`, with the directory created lazily.
+There is **no `state.json`** anywhere in the design. An atom is a `.md` file with `state` in its YAML frontmatter. State mutation is a surgical frontmatter edit via `parser.replace_state_in_frontmatter(content, new_state)`, then a full-file rewrite via `writer.write_atomic`. WAL location is `<project>/.atomic-dag/wal.jsonl`.
+
+`execute_transition` is responsible for ensuring the WAL parent directory exists via `Path(wal_path).parent.mkdir(parents=True, exist_ok=True)` before the first call to `wal.log_event` — this preserves the existing `wal.log_event` contract ("parent directory must already exist", documented in `wal.py`) without modifying `wal.py`. The `.atomic-dag/` directory is therefore created lazily by `execute_transition` on first use of the project, not by `wal.log_event` itself.
 
 ## Consequences
 
@@ -96,3 +102,6 @@ There is **no `state.json`** anywhere in the design. An atom is a `.md` file wit
 
 4. **Coupling the gate only when it determines the route (rejecting DA-2's "always called").**
    **Rejected** because RF-2.5 makes `gate_result` a mandatory, non-null WAL field for every transition. A WAL entry without a gate result would fail the audit-completeness criterion regardless of whether the gate influenced routing.
+
+5. **D1 ordering with FSM before gate (FSM-then-gate as a micro-optimisation).**
+   **Rejected**, on 2026-05-17 fix-forward after Copilot review caught it. Even though placing the FSM check first avoids computing the gate on FSM-invalid transitions, that ordering (a) directly contradicts ADR-003 §Lesson 3 verbatim, (b) contradicts the §6.2 sequence diagram verbatim, and (c) makes the D4 "ALWAYS called" claim self-contradictory with the early-return on FSM-invalid. The optimisation is also trivial in absolute terms (gate is a pure dict read with no I/O). Fidelity to the established ordering is preferred over paralela invention; the same principle that drove the rejection of D3 (item 1 above) applies symmetrically here.
