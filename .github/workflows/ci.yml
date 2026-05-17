@@ -2,9 +2,18 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - 'claude/**'
   pull_request:
     branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  # Cancela runs antigos quando um novo push chega na mesma ref.
+  # Evita CPU duplicada no caso push+pull_request.synchronize.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   quality:
