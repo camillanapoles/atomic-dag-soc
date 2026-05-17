@@ -1,4 +1,4 @@
-"""Tests for atomic_dag.parser — 26 scenarios."""
+"""Tests for atomic_dag.parser — 42 scenarios (27 herdados + 15 Phase 2.C.1)."""
 
 from __future__ import annotations
 
@@ -7,7 +7,12 @@ from pathlib import Path
 
 import pytest
 
-from atomic_dag.parser import AtomParseError, parse_atom, parse_atom_directory
+from atomic_dag.parser import (
+    AtomParseError,
+    parse_atom,
+    parse_atom_directory,
+    replace_state_in_frontmatter,
+)
 
 
 def _write_atom(path: Path, content: str) -> Path:
@@ -296,3 +301,359 @@ def test_malformed_deps_string(tmp_path: Path) -> None:
     )
     atom = parse_atom(f)
     assert atom.deps == []
+
+
+# ── Family 9 — replace_state_in_frontmatter (Phase 2.C.1) ────────────
+
+
+# ── Scenario 27: state: simple — value replaced; rest byte-identical ──
+
+
+def test_s27_replace_state_simple() -> None:
+    content = "---\natomic_id: a\nstate: pending\n---\nBody.\n"
+    result = replace_state_in_frontmatter(content, "in-progress")
+    assert result == "---\natomic_id: a\nstate: in-progress\n---\nBody.\n"
+
+
+# ── Scenario 28: cursor_state as inline string ────────────────────────
+
+
+def test_s28_replace_cursor_state_string() -> None:
+    content = "---\natomic_id: a\ncursor_state: pending\n---\nBody.\n"
+    result = replace_state_in_frontmatter(content, "in-progress")
+    assert result == "---\natomic_id: a\ncursor_state: in-progress\n---\nBody.\n"
+
+
+# ── Scenario 29: cursor_state dict, THIS uppercase — THIS replaced; siblings intact ──
+
+
+def test_s29_replace_cursor_state_dict_THIS_uppercase() -> None:
+    content = (
+        "---\n"
+        "atomic_id: a\n"
+        "cursor_state:\n"
+        "  FROM: created\n"
+        "  THIS: pending\n"
+        "  GOTO: in-progress\n"
+        "---\n"
+        "Body.\n"
+    )
+    expected = (
+        "---\n"
+        "atomic_id: a\n"
+        "cursor_state:\n"
+        "  FROM: created\n"
+        "  THIS: in-progress\n"
+        "  GOTO: in-progress\n"
+        "---\n"
+        "Body.\n"
+    )
+    assert replace_state_in_frontmatter(content, "in-progress") == expected
+
+
+# ── Scenario 30: cursor_state dict, this lowercase — case preserved ───
+
+
+def test_s30_replace_cursor_state_dict_this_lowercase() -> None:
+    content = (
+        "---\n"
+        "atomic_id: a\n"
+        "cursor_state:\n"
+        "  from: created\n"
+        "  this: pending\n"
+        "  goto: in-progress\n"
+        "---\n"
+        "Body.\n"
+    )
+    expected = (
+        "---\n"
+        "atomic_id: a\n"
+        "cursor_state:\n"
+        "  from: created\n"
+        "  this: in-progress\n"
+        "  goto: in-progress\n"
+        "---\n"
+        "Body.\n"
+    )
+    assert replace_state_in_frontmatter(content, "in-progress") == expected
+
+
+# ── Scenario 31: state empty + cursor_state present → writes to cursor_state ──
+
+
+def test_s31_replace_state_empty_falls_through_to_cursor_state() -> None:
+    content = (
+        "---\n"
+        "atomic_id: a\n"
+        "state:\n"
+        "cursor_state: pending\n"
+        "---\n"
+        "Body.\n"
+    )
+    expected = (
+        "---\n"
+        "atomic_id: a\n"
+        "state:\n"
+        "cursor_state: in-progress\n"
+        "---\n"
+        "Body.\n"
+    )
+    assert replace_state_in_frontmatter(content, "in-progress") == expected
+
+
+# ── Scenario 32: state and cursor_state both present → state takes precedence ──
+
+
+def test_s32_replace_state_takes_precedence_over_cursor_state() -> None:
+    content = (
+        "---\n"
+        "atomic_id: a\n"
+        "state: pending\n"
+        "cursor_state: pending\n"
+        "---\n"
+        "Body.\n"
+    )
+    expected = (
+        "---\n"
+        "atomic_id: a\n"
+        "state: in-progress\n"
+        "cursor_state: pending\n"
+        "---\n"
+        "Body.\n"
+    )
+    assert replace_state_in_frontmatter(content, "in-progress") == expected
+
+
+# ── Scenario 33: byte-level idempotency — already at target → output == input ──
+
+
+def test_s33_replace_state_idempotent_byte_exact() -> None:
+    # Plain scalar
+    content = (
+        "---\n"
+        "atomic_id: a\n"
+        "state: pending\n"
+        "---\n"
+        "Body with trailing newline.\n"
+    )
+    assert replace_state_in_frontmatter(content, "pending") == content
+    # Double-quoted scalar — quoting style preserved
+    content_dq = (
+        "---\n"
+        "atomic_id: a\n"
+        'state: "pending"\n'
+        "---\n"
+        "Body.\n"
+    )
+    assert replace_state_in_frontmatter(content_dq, "pending") == content_dq
+    # Single-quoted scalar — quoting style preserved
+    content_sq = (
+        "---\n"
+        "atomic_id: a\n"
+        "state: 'pending'\n"
+        "---\n"
+        "Body.\n"
+    )
+    assert replace_state_in_frontmatter(content_sq, "pending") == content_sq
+
+
+# ── Scenario 34: quad-backtick envelope preserved on output ──────────
+
+
+def test_s34_replace_state_preserves_quad_backtick_envelope() -> None:
+    content = (
+        "````markdown\n"
+        "---\n"
+        "atomic_id: a\n"
+        "state: pending\n"
+        "---\n"
+        "Body.\n"
+        "````\n"
+    )
+    expected = (
+        "````markdown\n"
+        "---\n"
+        "atomic_id: a\n"
+        "state: in-progress\n"
+        "---\n"
+        "Body.\n"
+        "````\n"
+    )
+    assert replace_state_in_frontmatter(content, "in-progress") == expected
+
+
+# ── Scenario 35: body containing --- intact after replacement ────────
+
+
+def test_s35_replace_state_preserves_body_with_horizontal_rule() -> None:
+    content = (
+        "---\n"
+        "atomic_id: a\n"
+        "state: pending\n"
+        "---\n"
+        "Before.\n"
+        "\n"
+        "---\n"
+        "\n"
+        "After.\n"
+    )
+    expected = (
+        "---\n"
+        "atomic_id: a\n"
+        "state: in-progress\n"
+        "---\n"
+        "Before.\n"
+        "\n"
+        "---\n"
+        "\n"
+        "After.\n"
+    )
+    assert replace_state_in_frontmatter(content, "in-progress") == expected
+
+
+# ── Scenario 36: no frontmatter → AtomParseError, filepath in message ──
+
+
+def test_s36_replace_state_no_frontmatter_raises_with_filepath() -> None:
+    content = "no frontmatter here\n"
+    with pytest.raises(AtomParseError) as exc_info:
+        replace_state_in_frontmatter(
+            content, "in-progress", filepath="/path/to/atom.md"
+        )
+    # DA-C1 (ii): the keyword-only filepath argument must reach the error
+    # message; otherwise it is decorative and fails the coherence rationale.
+    rendered = str(exc_info.value)
+    assert "/path/to/atom.md" in rendered
+    assert "frontmatter" in rendered.lower()
+
+
+# ── Scenario 37: YAML comment within frontmatter preserved ───────────
+
+
+def test_s37_replace_state_preserves_yaml_comment() -> None:
+    content = (
+        "---\n"
+        "atomic_id: a\n"
+        "state: pending  # initial state\n"
+        "---\n"
+        "Body.\n"
+    )
+    expected = (
+        "---\n"
+        "atomic_id: a\n"
+        "state: in-progress  # initial state\n"
+        "---\n"
+        "Body.\n"
+    )
+    assert replace_state_in_frontmatter(content, "in-progress") == expected
+
+
+# ── Scenario 38: round-trip semantic — parse_atom(replaced).state == target ──
+
+
+def test_s38_replace_state_semantic_round_trip(tmp_path: Path) -> None:
+    cases: list[tuple[str, str]] = [
+        (
+            "state_key",
+            "---\natomic_id: a\nstate: pending\n---\nBody.\n",
+        ),
+        (
+            "cursor_state_string",
+            "---\natomic_id: a\ncursor_state: pending\n---\nBody.\n",
+        ),
+        (
+            "cursor_state_dict_THIS",
+            (
+                "---\n"
+                "atomic_id: a\n"
+                "cursor_state:\n"
+                "  FROM: created\n"
+                "  THIS: pending\n"
+                "  GOTO: next\n"
+                "---\n"
+                "Body.\n"
+            ),
+        ),
+    ]
+    for label, content in cases:
+        new_content = replace_state_in_frontmatter(content, "in-progress")
+        path = tmp_path / f"{label}.md"
+        path.write_text(new_content, encoding="utf-8")
+        atom = parse_atom(path)
+        assert atom.state == "in-progress", f"round-trip failed for {label}"
+
+
+# ── Scenario 39: cursor_state block, no THIS/this, dedent then atomic_id-like ──
+# Exercises: dedent break (cursor_state block ended by non-indented line) +
+# outer-loop continue after exhausted inner scan + raise (no state-bearing key
+# located).
+
+
+def test_s39_cursor_state_block_without_THIS_raises() -> None:
+    content = (
+        "---\n"
+        "atomic_id: a\n"
+        "cursor_state:\n"
+        "  FROM: created\n"
+        "  GOTO: in-progress\n"
+        "extra: trailing\n"
+        "---\n"
+        "Body.\n"
+    )
+    with pytest.raises(AtomParseError) as exc_info:
+        replace_state_in_frontmatter(content, "in-progress", filepath="/x.md")
+    rendered = str(exc_info.value)
+    assert "/x.md" in rendered
+    assert "state-bearing key" in rendered.lower() or "frontmatter" in rendered.lower()
+
+
+# ── Scenario 40: cursor_state in flow-mapping form — out-of-scope, skipped ──
+# Exercises: flow-mapping continue branch (Sprint 2 does not support
+# `cursor_state: {THIS: ...}`; the function skips this form and, with no other
+# state-bearing key present, raises).
+
+
+def test_s40_cursor_state_flow_mapping_out_of_scope_raises() -> None:
+    content = (
+        "---\n"
+        "atomic_id: a\n"
+        "cursor_state: {FROM: created, THIS: pending, GOTO: in-progress}\n"
+        "---\n"
+        "Body.\n"
+    )
+    with pytest.raises(AtomParseError) as exc_info:
+        replace_state_in_frontmatter(content, "in-progress", filepath="/x.md")
+    rendered = str(exc_info.value)
+    assert "/x.md" in rendered
+
+
+# ── Scenario 41: cursor_state block with blank line between header and THIS ──
+# Exercises: blank-line continue inside the inner block scan. The THIS child is
+# still located despite the blank line; the blank line is preserved byte-exact
+# in the output.
+
+
+def test_s41_cursor_state_block_with_blank_line_inside() -> None:
+    content = (
+        "---\n"
+        "atomic_id: a\n"
+        "cursor_state:\n"
+        "  FROM: created\n"
+        "\n"
+        "  THIS: pending\n"
+        "  GOTO: in-progress\n"
+        "---\n"
+        "Body.\n"
+    )
+    expected = (
+        "---\n"
+        "atomic_id: a\n"
+        "cursor_state:\n"
+        "  FROM: created\n"
+        "\n"
+        "  THIS: in-progress\n"
+        "  GOTO: in-progress\n"
+        "---\n"
+        "Body.\n"
+    )
+    assert replace_state_in_frontmatter(content, "in-progress") == expected

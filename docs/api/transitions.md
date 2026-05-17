@@ -137,7 +137,7 @@ Per-atom locking is **deferred to Sprint 5**. FM-01 (concurrent WAL writers) is 
 
 ## 9. Inherited primitives (not re-specified here)
 
-These are Sprint 0/1 contracts, used as-is, **not modified** (ADR-003 §Lesson 1):
+These are Sprint 0/1 contracts, used as-is, **not modified** (Sprint 2 scope invariant; ADR-003 §Lesson 1 literally addresses only the coverage omit list and is cited only where it applies directly):
 
 - `parser.parse_atom(path) -> Atom`; `parser.replace_state_in_frontmatter(content, new_state) -> str`
 - `gate.validate_gate(meta) -> GateResult` (`.passed`, `.gold_score`, `.pqms_score`, `.vvv_score`, `.reasons`)
@@ -145,7 +145,7 @@ These are Sprint 0/1 contracts, used as-is, **not modified** (ADR-003 §Lesson 1
 - `writer.write_atomic(target, content)` (tmp + fsync + rename; FM-02 closed)
 - `wal.log_event(path, event)`; `wal.read_events(path) -> list[dict]`
 
-`replace_state_in_frontmatter` is the **one** Sprint-0/1-adjacent helper that does not yet exist; its addition to `parser.py` is Phase 2.C.1, specified separately, and is the **only permitted modification** to a pre-Sprint-2 source file. This is a conscious narrowing of ADR-003 §Lesson 1: the lesson forbids divergence from established modules; adding a pure, surgical helper to `parser.py` (which is itself Sprint 1) is an extension, not a divergence, and is the minimum-surface way to give `transitions.py` the frontmatter-mutation primitive it needs. No behaviour change to existing `parser.py` functions is permitted.
+`replace_state_in_frontmatter` is the **one** Sprint-0/1-adjacent helper that does not yet exist; its addition to `parser.py` is Phase 2.C.1, specified separately, and is the **only permitted modification** to a pre-Sprint-2 source file. This is a conscious narrowing of the Sprint 2 scope invariant (carried in this protocol and in ADR-006, not in ADR-003 §Lesson 1, whose literal text speaks only to the coverage omit list). The scope invariant forbids divergence from established modules; adding a pure, surgical helper to `parser.py` (which is itself Sprint 1) is an extension, not a divergence, and is the minimum-surface way to give `transitions.py` the frontmatter-mutation primitive it needs. No behaviour change to existing `parser.py` functions is permitted.
 
 ## 10. Test obligations (forward reference)
 
