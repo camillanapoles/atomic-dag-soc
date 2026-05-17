@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>atomic-dag-soc — Sprint 2 Dashboard</title>
+<style>
+  :root {
+    --bg: #0f1115;
+    --panel: #161922;
+    --panel-2: #1d2230;
+    --ink: #e8ecf3;
+    --muted: #8892a8;
+    --done: #3fb950;
+    --current: #d29922;
+    --pending: #545d72;
+    --debt: #f85149;
+    --accent: #58a6ff;
+    --border: #2a3142;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Inter, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--sans); font-size: 14px; line-height: 1.5;
+    padding: 24px;
+  }
+  h1 { font-size: 22px; margin: 0 0 4px 0; font-weight: 600; }
+  h2 { font-size: 16px; margin: 28px 0 12px 0; font-weight: 600; color: var(--accent); letter-spacing: 0.02em; text-transform: uppercase; }
+  .meta { color: var(--muted); font-family: var(--mono); font-size: 12px; margin-bottom: 24px; }
+  .meta a { color: var(--accent); text-decoration: none; }
+  .meta a:hover { text-decoration: underline; }
+  .grid { display: grid; gap: 16px; }
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 980px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+  .panel {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 6px;
+    padding: 16px;
+  }
+  /* Roadmap */
+  .roadmap { display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; }
+  .phase {
+    background: var(--panel-2); border: 1px solid var(--border); border-radius: 4px;
+    padding: 10px 8px; text-align: center; min-height: 90px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    position: relative;
+  }
+  .phase .id { font-family: var(--mono); font-weight: 700; font-size: 13px; }
+  .phase .label { font-size: 11px; color: var(--muted); margin-top: 4px; line-height: 1.3; }
+  .phase .status-dot {
+    width: 8px; height: 8px; border-radius: 50%; margin: 6px auto 0;
+  }
+  .phase.done { border-color: var(--done); }
+  .phase.done .status-dot { background: var(--done); }
+  .phase.done .id { color: var(--done); }
+  .phase.current { border-color: var(--current); }
+  .phase.current .status-dot { background: var(--current); animation: pulse 2s ease-in-out infinite; }
+  .phase.current .id { color: var(--current); }
+  .phase.pending .status-dot { background: var(--pending); }
+  .phase.pending .id { color: var(--muted); }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  /* Timeline */
+  .timeline { list-style: none; padding: 0; margin: 0; position: relative; }
+  .timeline::before {
+    content: ""; position: absolute; left: 9px; top: 6px; bottom: 6px;
+    width: 2px; background: var(--border);
+  }
+  .timeline li {
+    position: relative; padding: 0 0 16px 32px;
+  }
+  .timeline li::before {
+    content: ""; position: absolute; left: 4px; top: 6px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--done); border: 2px solid var(--bg);
+  }
+  .timeline li:last-child { padding-bottom: 0; }
+  .timeline .sha { font-family: var(--mono); color: var(--accent); font-weight: 600; font-size: 13px; }
+  .timeline .sha a { color: inherit; text-decoration: none; }
+  .timeline .sha a:hover { text-decoration: underline; }
+  .timeline .phase-tag {
+    display: inline-block; font-family: var(--mono); font-size: 11px;
+    padding: 1px 6px; background: var(--panel-2); border: 1px solid var(--border);
+    border-radius: 3px; margin-left: 8px; color: var(--muted);
+  }
+  .timeline .when { color: var(--muted); font-size: 12px; font-family: var(--mono); }
+  .timeline .what { color: var(--ink); margin-top: 2px; font-size: 13px; }
+  /* Debts */
+  .debt {
+    border-left: 3px solid var(--debt); padding: 8px 12px;
+    background: rgba(248, 81, 73, 0.06); border-radius: 0 4px 4px 0;
+    margin-bottom: 10px;
+  }
+  .debt:last-child { margin-bottom: 0; }
+  .debt .id { font-family: var(--mono); font-weight: 700; color: var(--debt); }
+  .debt .body { margin-top: 4px; color: var(--ink); font-size: 13px; }
+  .debt-closed {
+    border-left-color: var(--done); background: rgba(63, 185, 80, 0.06);
+  }
+  .debt-closed .id { color: var(--done); text-decoration: line-through; }
+  /* Criteria */
+  .criteria { font-size: 13px; }
+  .criteria details { margin-bottom: 8px; }
+  .criteria summary {
+    cursor: pointer; padding: 6px 8px; background: var(--panel-2);
+    border: 1px solid var(--border); border-radius: 4px;
+    font-family: var(--mono); font-weight: 600; color: var(--accent);
+  }
+  .criteria summary:hover { background: #232a3c; }
+  .criteria ul { margin: 8px 0 0 0; padding-left: 18px; }
+  .criteria li { margin-bottom: 4px; }
+  .criteria code { font-family: var(--mono); font-size: 12px; background: var(--panel-2); padding: 1px 4px; border-radius: 3px; }
+  /* Footer */
+  footer { margin-top: 36px; color: var(--muted); font-size: 12px; font-family: var(--mono); border-top: 1px solid var(--border); padding-top: 12px; }
+  /* Legend */
+  .legend {
+    display: flex; gap: 16px; font-size: 12px; color: var(--muted); margin-top: 8px;
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend .dot { width: 8px; height: 8px; border-radius: 50%; }
+</style>
+</head>
+<body>
+
+<h1>atomic-dag-soc — Sprint 2 Dashboard</h1>
+<div class="meta">
+  Branch <strong>claude/setup-atomic-dag-soc-K53NI</strong> &middot;
+  HEAD <a href="https://github.com/camillanapoles/atomic-dag-soc/commit/45161a8">45161a8</a> &middot;
+  5 commits ahead of <a href="https://github.com/camillanapoles/atomic-dag-soc/commit/2bfecc2f">2bfecc2f</a> (main) &middot;
+  Última fase fechada: <strong>2.C.1</strong>
+</div>
+
+<h2>Roadmap Sprint 2 — fases 2.A → 2.H</h2>
+<div class="panel">
+  <div class="roadmap">
+    <div class="phase done">
+      <div><div class="id">2.A</div><div class="label">ADR-006 spec</div></div>
+      <div class="status-dot"></div>
+    </div>
+    <div class="phase done">
+      <div><div class="id">2.B</div><div class="label">API protocol</div></div>
+      <div class="status-dot"></div>
+    </div>
+    <div class="phase done">
+      <div><div class="id">2.C.1</div><div class="label">parser helper</div></div>
+      <div class="status-dot"></div>
+    </div>
+    <div class="phase current">
+      <div><div class="id">2.C.2</div><div class="label">skeleton + happy path</div></div>
+      <div class="status-dot"></div>
+    </div>
+    <div class="phase pending">
+      <div><div class="id">2.D</div><div class="label">testes ×50 SIGKILL + perf + concorrência</div></div>
+      <div class="status-dot"></div>
+    </div>
+    <div class="phase pending">
+      <div><div class="id">2.E</div><div class="label">wire CLI</div></div>
+      <div class="status-dot"></div>
+    </div>
+    <div class="phase pending">
+      <div><div class="id">2.F</div><div class="label">cov 80→95 + FM-01 mitigado</div></div>
+      <div class="status-dot"></div>
+    </div>
+    <div class="phase pending">
+      <div><div class="id">2.G→2.H</div><div class="label">tag v0.3.0 + MPF_LOG</div></div>
+      <div class="status-dot"></div>
+    </div>
+  </div>
+  <div class="legend">
+    <span><span class="dot" style="background: var(--done)"></span>fechada (CI 3/3)</span>
+    <span><span class="dot" style="background: var(--current)"></span>aguardando gate</span>
+    <span><span class="dot" style="background: var(--pending)"></span>pendente</span>
+  </div>
+</div>
+
+<div class="grid grid-2" style="margin-top: 16px;">
+  <div class="panel">
+    <h2 style="margin-top: 0;">Timeline dos 5 commits</h2>
+    <ul class="timeline">
+      <li>
+        <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/45161a8">45161a8</a></span><span class="phase-tag">Phase 2.C.1</span></div>
+        <div class="when">2026-05-17 06:34 UTC</div>
+        <div class="what"><code style="font-family: var(--mono); font-size: 12px;">feat(parser):</code> replace_state_in_frontmatter — surgical state mutation</div>
+      </li>
+      <li>
+        <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/1177c2a">1177c2a</a></span><span class="phase-tag">Phase 2.B</span></div>
+        <div class="when">2026-05-17 05:38 UTC</div>
+        <div class="what"><code style="font-family: var(--mono); font-size: 12px;">docs(api):</code> document transitions module public protocol</div>
+      </li>
+      <li>
+        <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/c40de0e">c40de0e</a></span><span class="phase-tag">Phase 2.A fix</span></div>
+        <div class="when">2026-05-17 05:21 UTC</div>
+        <div class="what"><code style="font-family: var(--mono); font-size: 12px;">docs(adr):</code> amend ADR-006 — restore §Lesson 3 ordering + 3 clarifs</div>
+      </li>
+      <li>
+        <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/e37bf56">e37bf56</a></span><span class="phase-tag">CI infra</span></div>
+        <div class="when">2026-05-17 05:13 UTC</div>
+        <div class="what"><code style="font-family: var(--mono); font-size: 12px;">ci(workflow):</code> trigger on push to claude/** + dispatch + concurrency</div>
+      </li>
+      <li>
+        <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/dbcb0ce">dbcb0ce</a></span><span class="phase-tag">Phase 2.A</span></div>
+        <div class="when">2026-05-17 04:27 UTC</div>
+        <div class="what"><code style="font-family: var(--mono); font-size: 12px;">docs(adr):</code> ADR-006 sprint-2-refactor transitions specification</div>
+      </li>
+    </ul>
+  </div>
+
+  <div class="panel">
+    <h2 style="margin-top: 0;">Dívidas (para MPF_LOG em 2.H)</h2>
+    <div class="debt">
+      <div class="id">D1 — ci.yml fora do plano</div>
+      <div class="body">
+        Em <code style="font-family: var(--mono); font-size: 12px;">e37bf56</code>, <code style="font-family: var(--mono); font-size: 12px;">ci.yml</code> estendido com
+        <code style="font-family: var(--mono); font-size: 12px;">push:claude/**</code> + <code style="font-family: var(--mono); font-size: 12px;">workflow_dispatch</code> + <code style="font-family: var(--mono); font-size: 12px;">concurrency</code>.
+        Fora da sequência planejada de 15 commits. Necessário para destravar CI por-push;
+        não-revertido. Registrar verbatim em MPF_LOG.
+      </div>
+    </div>
+    <div class="debt">
+      <div class="id">D2 — concurrency não-dedup</div>
+      <div class="body">
+        <code style="font-family: var(--mono); font-size: 12px;">concurrency.group</code> em <code style="font-family: var(--mono); font-size: 12px;">ci.yml</code> não deduplica runs
+        <code style="font-family: var(--mono); font-size: 12px;">push:claude/**</code> vs <code style="font-family: var(--mono); font-size: 12px;">pull_request:synchronize</code>:
+        <code style="font-family: var(--mono); font-size: 12px;">github.ref</code> diverge entre os dois eventos
+        (<code style="font-family: var(--mono); font-size: 12px;">refs/heads/...</code> vs <code style="font-family: var(--mono); font-size: 12px;">refs/pull/N/merge</code>).
+        Resultado: dois runs verdes redundantes por push enquanto PR aberta.
+        Candidato a <code style="font-family: var(--mono); font-size: 12px;">concurrency.group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}</code>
+        em sprint futura. Não-revertido.
+      </div>
+    </div>
+    <div class="debt debt-closed">
+      <div class="id">~~D3 — citação §Lesson 1~~</div>
+      <div class="body">
+        Citação fraca de ADR-003 §Lesson 1 em <code style="font-family: var(--mono); font-size: 12px;">transitions.md §9</code>
+        atribuía a §Lesson 1 a regra "não modificar 5 módulos" que o verbatim
+        não diz (§Lesson 1 é só sobre coverage omit-list).
+        <strong>Fechada em <code style="font-family: var(--mono); font-size: 12px;">45161a8</code></strong>: re-ancorada como
+        "invariante de escopo Sprint 2; §Lesson 1 literal = omit-list".
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>Critérios de verificação das fases pendentes</h2>
+<div class="panel criteria">
+  <details>
+    <summary>2.C.2 — execute_transition skeleton + happy path</summary>
+    <ul>
+      <li>Primeira linha de <code>src/atomic_dag/transitions.py</code>; cursor FROM <code>45161a8</code></li>
+      <li>Implementa <code>execute_transition</code> em ordem D1: <code>parse → gate (SEMPRE) → fsm → route → replace_state → write_atomic → wal.log_event (ÚNICO)</code></li>
+      <li>Happy path: cada ação válida da matriz FSM produz a transição correta + 1 entrada WAL com todos os campos D4 obrigatórios</li>
+      <li><code>TransitionResult</code> frozen, <code>__bool__ = success</code>, 8 campos D5</li>
+      <li>Cobertura honesta global ≥ 95% após esta fase</li>
+      <li>CI 3/3 success em 3.11/3.12/3.13</li>
+    </ul>
+  </details>
+  <details>
+    <summary>2.D — testes adversariais (SIGKILL ×50, perf, concorrência)</summary>
+    <ul>
+      <li><code>test_transition_survives_sigkill</code> parametrize range(50): <code>.md</code> íntegro + WAL parseável + invariante D11 (disco nunca atrasa WAL)</li>
+      <li>RF-2.6 perf: p99 &lt; 100 ms em projeto até 100 átomos</li>
+      <li>Concorrência: 4 procs em átomos distintos → 4 entradas WAL válidas em ordem de chegada</li>
+      <li>Cada cláusula do <code>transitions.md</code> §10 obriga 1 teste passing</li>
+    </ul>
+  </details>
+  <details>
+    <summary>2.E — wire CLI</summary>
+    <ul>
+      <li>Comando <code>atomic-dag transition</code> conectado a <code>execute_transition</code></li>
+      <li>Saída texto + JSON; flags consistentes com <code>validate</code>/<code>status</code></li>
+      <li>Exit codes D6: 0 sucesso (incl. idempotente, gate-fail-em-check→returned); 1 op (FSM-invalid, terminal); 2 estrutural</li>
+      <li>Mensagens de erro nomeiam <code>atom_id</code> + <code>action</code> + razão (RF-2.3)</li>
+    </ul>
+  </details>
+  <details>
+    <summary>2.F — cov-fail-under 80 → 95 + TECHNICAL_DEBT FM-01</summary>
+    <ul>
+      <li><code>pyproject.toml</code>: <code>--cov-fail-under=95</code></li>
+      <li><code>TECHNICAL_DEBT.md</code>: entrada FM-01 mitigado (Sprint 5 fecha real)</li>
+      <li>CI ainda 3/3 com novo threshold</li>
+    </ul>
+  </details>
+  <details>
+    <summary>2.G — tag v0.3.0-sprint2</summary>
+    <ul>
+      <li>Tag anotada criada após CI verde</li>
+      <li>PR #1 sai de draft (única transição out-of-draft permitida no Sprint 2 por I7)</li>
+    </ul>
+  </details>
+  <details>
+    <summary>2.H — MPF_LOG.md</summary>
+    <ul>
+      <li>Entrada datada com MPF computado pós-Sprint 2</li>
+      <li>Registra D1, D2 verbatim</li>
+      <li>Fix-forward header de ADR-006 (citação de §Lesson 1)</li>
+      <li>Atualiza mandato PARTE 5</li>
+    </ul>
+  </details>
+</div>
+
+<footer>
+  Gerado em 2026-05-17. Dados embutidos no HTML; abre offline.
+  Para regenerar, edite este arquivo manualmente até que exista <code style="font-family: var(--mono); font-size: 12px;">scripts/build_dashboard.py</code> (fora do escopo Sprint 2).
+</footer>
+
+</body>
+</html>
