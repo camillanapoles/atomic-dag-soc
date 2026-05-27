@@ -66,6 +66,9 @@ packages = ["src/atomic_dag"]
 minversion = "8.0"
 testpaths = ["tests"]
 addopts = "-ra --cov=atomic_dag --cov-report=term-missing --cov-fail-under=80"
+markers = [
+    "slow: marca testes lentos (SIGKILL fuzzer, perf) — skip em CI normal",
+]
 
 [tool.coverage.run]
 source = ["atomic_dag"]
