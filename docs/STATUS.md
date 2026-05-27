@@ -8,13 +8,15 @@
 
 - **Nome:** `claude/setup-atomic-dag-soc-K53NI`
 - **Base:** `2bfecc2f` (`main`)
-- **HEAD:** `45161a8`
-- **Commits ahead de main:** 5
+- **HEAD:** `1d5f18f`
+- **Commits ahead de main:** 7
 
-## Os 5 commits do Sprint 2 (do mais recente ao mais antigo)
+## Os 7 commits do Sprint 2 (do mais recente ao mais antigo)
 
 | SHA | Fase | Data UTC | Mensagem |
 |---|---|---|---|
+| [`1d5f18f`](https://github.com/camillanapoles/atomic-dag-soc/commit/1d5f18f) | **2.C.2** | 2026-05-27 22:13 | `feat(transitions): execute_transition skeleton + happy path` |
+| [`267e06f`](https://github.com/camillanapoles/atomic-dag-soc/commit/267e06f) | **orientação** | 2026-05-17 14:03 | `docs(status): operator orientation artifacts — catalog, dashboard, human WAL` |
 | [`45161a8`](https://github.com/camillanapoles/atomic-dag-soc/commit/45161a8) | **2.C.1** | 2026-05-17 06:34 | `feat(parser): replace_state_in_frontmatter — surgical state mutation` |
 | [`1177c2a`](https://github.com/camillanapoles/atomic-dag-soc/commit/1177c2a) | **2.B** | 2026-05-17 05:38 | `docs(api): document transitions module public protocol` |
 | [`c40de0e`](https://github.com/camillanapoles/atomic-dag-soc/commit/c40de0e) | **2.A fix** | 2026-05-17 05:21 | `docs(adr): amend ADR-006 — restore ADR-003 §Lesson 3 ordering + 3 clarifs` |
@@ -31,10 +33,11 @@ Autoria uniforme: `Camilla Napoles <cnmfs@cesar.school>`.
 | 2.A fix — D1 ordering restored | `c40de0e` | Address 4 Copilot review comments | ✅ verde |
 | 2.B — public protocol docs | `1177c2a` | `docs/api/transitions.md` com contrato observável | ✅ verde |
 | 2.C.1 — `replace_state_in_frontmatter` | `45161a8` | Adição pura a `parser.py`, 27 herdados + 15 novos verdes | ✅ verde |
+| 2.C.2 — execute_transition skeleton | `1d5f18f` | `transitions.py` 100% cov, 30 testes verdes, idempotência §5 antes do FSM | ✅ verde |
 
-## Próximo gate — 2.C.2 (aguardando)
+## Próximo gate — 2.D (aguardando)
 
-`feat(transitions): execute_transition skeleton + happy path` — primeira escrita em `src/atomic_dag/transitions.py`. Cursor de partida: `FROM 45161a8`. Trava I8: plano de tradução do orquestrador + "go 2.C.2" explícito antes de qualquer linha de código.
+`tests/test_transitions_sigkill.py + _performance.py + _concurrency.py` — testes adversariais (SIGKILL ×50, perf p99 < 100ms, concorrência 4-proc). Cursor de partida: `FROM 1d5f18f`. Trava I8: plano de tradução do orquestrador + "go 2.D" explícito antes de qualquer linha de código.
 
 ## Dívidas registradas (destino MPF_LOG no commit 2.H)
 
