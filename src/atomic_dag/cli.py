@@ -19,6 +19,11 @@ from atomic_dag import __version__
 from atomic_dag.dag import compute_dag_levels, find_next_actionable, state_summary
 from atomic_dag.gate import validate_gate
 from atomic_dag.parser import AtomParseError, parse_atom_directory
+from atomic_dag.transitions import (
+    AtomNotFoundError,
+    InvalidTransitionError,
+    execute_transition,
+)
 
 if TYPE_CHECKING:
     from atomic_dag.parser import Atom
@@ -137,10 +142,70 @@ def next_cmd(ctx: click.Context, as_json: bool) -> None:
 @main.command()
 @click.argument("atom_id")
 @click.argument("action")
-def transition(atom_id: str, action: str) -> None:
-    """Attempt a state transition on an atom. (Sprint 2)"""
-    click.echo(f"transition {atom_id} {action}: not yet implemented (Sprint 2)")
+@click.option("--json", "as_json", is_flag=True, help="Output as JSON.")
+@click.pass_context
+def transition(
+    ctx: click.Context, atom_id: str, action: str, as_json: bool
+) -> None:
+    """Execute a state transition on an atom.
+
+    Exit codes (D6 / transitions.md §6):
+      0 — success (including idempotent replay and gate-fail-on-check → returned)
+      1 — operational (FSM-invalid, terminal state)
+      2 — structural (atom_id not in project, parse error)
+    """
+    project_root = ctx.obj["project"]
+    atoms = _load_atoms(ctx)  # exits 2 on AtomParseError
+    if atom_id not in atoms:
+        click.echo(
+            f"Error: atom_id {atom_id!r} not found in project {project_root}",
+            err=True,
+        )
+        sys.exit(2)
+    filepath = atoms[atom_id].filepath
+
+    try:
+        result = execute_transition(filepath, action, project_root=project_root)
+    except AtomNotFoundError as exc:  # pragma: no cover
+        # Defensive: race between _load_atoms (which already confirmed
+        # atom_id presence via parse_atom_directory) and
+        # execute_transition's own filepath.exists() check. Structurally
+        # unreachable via the normal CLI flow because the lookup miss
+        # above filters missing atom_ids; only an external file deletion
+        # between the two calls could fire this branch.
+        click.echo(f"Error: {exc}", err=True)
+        sys.exit(2)
+    except InvalidTransitionError as exc:
+        click.echo(f"Error: {exc}", err=True)
+        sys.exit(1)
+
+    if as_json:
+        click.echo(
+            json_mod.dumps(
+                {
+                    "atom_id": result.atom_id,
+                    "from_state": result.from_state,
+                    "to_state": result.to_state,
+                    "action": result.action,
+                    "gate_passed": result.gate_passed,
+                    "idempotent": result.idempotent,
+                    "duration_ms": result.duration_ms,
+                    "success": result.success,
+                },
+                indent=2,
+            )
+        )
+    else:
+        suffix = " (idempotent replay, no-op)" if result.idempotent else ""
+        click.echo(
+            f"transition {atom_id} {action}: "
+            f"{result.from_state} -> {result.to_state}{suffix}"
+        )
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
+    # Script entry point. Pytest imports `main` directly via CliRunner
+    # and never triggers this guard; covering it would require spawning
+    # cli.py as a subprocess in tests, which adds CI complexity for no
+    # falsifiable benefit (Click already validates the dispatch).
     main()

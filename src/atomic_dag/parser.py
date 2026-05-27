@@ -145,3 +145,171 @@ def parse_atom_directory(dir: str | Path) -> dict[str, Atom]:
         atoms[aid] = atom
 
     return atoms
+
+
+def replace_state_in_frontmatter(
+    content: str,
+    new_state: str,
+    *,
+    filepath: str = "<unknown>",
+) -> str:
+    """Surgically replace the state value in an atom's YAML frontmatter.
+
+    Performs byte-precise mutation: only the scalar value at the state-bearing
+    key changes. Everything else (key order, indentation, quoting style,
+    comments, body, quad-backtick envelope) is preserved exactly. No YAML
+    round-trip is performed — round-tripping via ``yaml.safe_dump`` would
+    reorder keys, normalise quoting and drop comments, regressing bytes that
+    do not encode the state.
+
+    Precedence of the state-bearing key mirrors ``Atom.state``:
+
+    1. Top-level ``state:`` when present with a non-empty scalar value.
+    2. Top-level ``cursor_state:`` when (a) ``state:`` is absent, or
+       (b) ``state:`` is present but empty:
+
+       - inline string form (``cursor_state: <value>``): value is replaced;
+       - block-mapping form (``cursor_state:\\n  ...``): the ``THIS`` or
+         ``this`` child is replaced, case preserved.
+
+    Idempotency: if the located scalar already equals ``new_state`` (and
+    quoting style is preserved), the returned string is byte-identical to
+    the input. This supports the Sprint 2 D2 idempotency contract by
+    making ``execute_transition``'s "state already matches" short-circuit
+    detectable at the byte level.
+
+    Parameters
+    ----------
+    content : str
+        Full atom file content, optionally wrapped in a quad-backtick fence.
+    new_state : str
+        Target state value to write.
+    filepath : str, keyword-only
+        Path for ``AtomParseError`` messages. Defaults to ``"<unknown>"``.
+
+    Returns
+    -------
+    str
+        Content with the state mutated; all other bytes unchanged.
+
+    Raises
+    ------
+    AtomParseError
+        If no YAML frontmatter is found, or if no recognised state-bearing
+        key (``state``, ``cursor_state``, or ``cursor_state.THIS``) is
+        available to update.
+    """
+    match = _FRONTMATTER_RE.search(content)
+    if not match:
+        raise AtomParseError(filepath, "no YAML frontmatter found")
+
+    fm_text = match.group(1)
+    fm_start, fm_end = match.start(1), match.end(1)
+
+    new_fm = _replace_state_in_fm_text(fm_text, new_state, filepath)
+    return content[:fm_start] + new_fm + content[fm_end:]
+
+
+def _replace_state_in_fm_text(fm_text: str, new_state: str, filepath: str) -> str:
+    """Locate the state-bearing key inside the frontmatter text and replace its value."""
+    lines = fm_text.split("\n")
+
+    # Pass 1: top-level `state:` (precedence over cursor_state when non-empty)
+    state_idx: int | None = None
+    state_empty = False
+    for i, line in enumerate(lines):
+        if re.match(r"^state\s*:", line):
+            value = _extract_scalar_value(line)
+            state_idx = i
+            state_empty = not value
+            break
+
+    if state_idx is not None and not state_empty:
+        lines[state_idx] = _replace_value_in_line(lines[state_idx], new_state)
+        return "\n".join(lines)
+
+    # Pass 2: cursor_state (string, block-dict THIS/this)
+    for i, line in enumerate(lines):
+        if re.match(r"^cursor_state\s*:", line):
+            value = _extract_scalar_value(line)
+            if value and not value.lstrip().startswith("{"):
+                # Inline string form
+                lines[i] = _replace_value_in_line(lines[i], new_state)
+                return "\n".join(lines)
+            if value and value.lstrip().startswith("{"):
+                # Flow-mapping form — not supported in Sprint 2 (out of test scope)
+                continue
+            # Block-mapping form: scan indented children for THIS/this
+            for j in range(i + 1, len(lines)):
+                child = lines[j]
+                if not child.strip():
+                    continue
+                if not (child.startswith(" ") or child.startswith("\t")):
+                    break  # dedent ends the cursor_state block
+                if re.match(r"^\s+(THIS|this)\s*:", child):
+                    lines[j] = _replace_value_in_line(child, new_state)
+                    return "\n".join(lines)
+            # cursor_state block had no THIS/this child; continue to next candidate
+            continue
+
+    raise AtomParseError(
+        filepath,
+        "no state-bearing key (state, cursor_state, or cursor_state.THIS) "
+        "found in frontmatter",
+    )
+
+
+def _extract_scalar_value(line: str) -> str:
+    """Return the trimmed scalar value of a ``key: value`` line, comment stripped."""
+    colon_idx = line.find(":")
+    if colon_idx == -1:  # pragma: no cover
+        # Structurally unreachable via the public API: this helper is only
+        # invoked from _replace_state_in_fm_text on lines that already matched
+        # `^state\s*:` or `^cursor_state\s*:`, which guarantees a colon. The
+        # branch exists as a defensive return against future refactors that
+        # could break the precondition.
+        return ""
+    after = line[colon_idx + 1 :]
+    comment_match = re.search(r"\s+#", after)
+    if comment_match:
+        after = after[: comment_match.start()]
+    return after.strip()
+
+
+def _replace_value_in_line(line: str, new_state: str) -> str:
+    """Substitute the scalar value of ``line``, preserving quoting and trailing comment."""
+    colon_idx = line.find(":")
+    if colon_idx == -1:  # pragma: no cover
+        # Structurally unreachable via the public API: this helper is only
+        # invoked on lines that already matched `^state\s*:`,
+        # `^cursor_state\s*:`, or `^\s+(THIS|this)\s*:`, all of which require
+        # a colon. The branch exists as a defensive return against future
+        # refactors that could break the precondition.
+        return line
+
+    # Preserve any whitespace immediately following the colon (the YAML separator).
+    sep_end = colon_idx + 1
+    while sep_end < len(line) and line[sep_end] in (" ", "\t"):
+        sep_end += 1
+    prefix = line[:sep_end]
+    rest = line[sep_end:]
+
+    # Split rest into value-part and trailing (comment or pure whitespace tail).
+    comment_match = re.search(r"(\s+#.*)$", rest)
+    if comment_match:
+        value_part = rest[: comment_match.start()]
+        trailing = comment_match.group(0)
+    else:
+        stripped = rest.rstrip()
+        value_part = stripped
+        trailing = rest[len(stripped) :]
+
+    # Preserve quoting style of the prior value.
+    if len(value_part) >= 2 and value_part.startswith('"') and value_part.endswith('"'):
+        new_value = f'"{new_state}"'
+    elif len(value_part) >= 2 and value_part.startswith("'") and value_part.endswith("'"):
+        new_value = f"'{new_state}'"
+    else:
+        new_value = new_state
+
+    return prefix + new_value + trailing
