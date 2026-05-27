@@ -30,6 +30,21 @@ This file tracks known debts in the codebase. Each entry is a fact, not an aspir
 **Plan:** Sprint 3 (according to PLANO_EXECUCAO_ENGENHARIA.md §6.4) — port the orchestrator code, write `tests/test_fm10_regression.py`, fix the coupling, verify the test goes from red to green.  
 **Owner:** Sprint 3 lead.
 
+### TD-004: FM-01 — concurrent WAL writers (mitigated, not closed)
+
+**Status:** mitigated  
+**Sprint origem:** 2 (ADR-006 §D8)  
+**Sprint fechamento previsto:** 5 (per-atom locking)  
+**Descrição:** múltiplos processos chamando `wal.log_event` simultaneamente
+no mesmo `wal.jsonl`. Mitigação atual via `O_APPEND` semantics + payload
+< PIPE_BUF (4096 bytes) → atomic line append no POSIX. Concurrent
+transitions em átomos distintos: seguro (testado em
+`test_transitions_concurrency.py` Phase 2.D, 4 procs × 4 átomos, 4 WAL
+lines parsáveis). Concurrent transitions no MESMO átomo: fora do contrato
+Sprint 2 (`transitions.md §8`).
+
+**Fechamento:** Sprint 5 introduz lock per-atom + reconcile command.
+
 ## Resolved Debts
 
 _None yet — this is the first sprint._
