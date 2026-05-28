@@ -6,10 +6,19 @@
 
 ## Branch corrente
 
-- **Nome:** `main` (Sprint 2 mergeada via PR #1)
-- **HEAD:** `da46621` (merge commit PR #1, Sprint 2 fechada)
+- **Nome:** `main` (Sprint 2 mergeada via PR #1; 2.H mergeada via PR #2; CLAUDE.md mergeado via PR #3)
+- **HEAD:** `07118f6` (merge PR #3 — CLAUDE.md boot context instalado)
 - **Tag mais recente:** `v0.3.0-sprint2` em `d9a785b` (publicada via UI; lightweight no remoto vs annotated local — D8 cosmético)
 - **Commits ahead de main:** 0 (mergeada em main)
+
+### Fases pós-merge Sprint 2
+
+| SHA | Fase | Quando | Mensagem |
+|---|---|---|---|
+| [`07118f6`](https://github.com/camillanapoles/atomic-dag-soc/commit/07118f6) | **2.J MERGE** | 2026-05-28 19:15Z | `Merge pull request #3 from camillanapoles/claude/add-claude-md` |
+| [`2e06aaf`](https://github.com/camillanapoles/atomic-dag-soc/commit/2e06aaf) | **2.J** | 2026-05-28 19:07Z | `docs: add CLAUDE.md — session boot context for @executor` |
+| [`45d2ede`](https://github.com/camillanapoles/atomic-dag-soc/commit/45d2ede) | **2.H MERGE** | 2026-05-28 18:52Z | `Merge pull request #2 from camillanapoles/claude/sync-sprint2-docs-2h` |
+| [`0a85ef4`](https://github.com/camillanapoles/atomic-dag-soc/commit/0a85ef4) | **2.H** | 2026-05-28 03:14Z | `docs(2.h): sync STATUS + WAL_HUMANO + dashboard reflecting Sprint 2 closed` |
 
 ## Sprint 2 — 11 commits + 1 merge commit em `main` (todos verdes na matriz 3.11/3.12/3.13)
 
@@ -44,6 +53,8 @@ Autoria uniforme: `Camilla Napoles <cnmfs@cesar.school>`.
 | 2.E — CLI wire | `df90620` | `atomic-dag transition` com `--json` e exit codes 0/1/2 (D6); 12 herdados + 12 novos verdes | ✅ verde |
 | 2.F — cov bump + TD-004 | `d9a785b` | `cov-fail-under` 80→95 (gate atingido com global 98.54%); TD-004 FM-01 documentada | ✅ verde |
 | 2.G — merge to main | `da46621` | PR #1 mergeado `--no-ff`; tag `v0.3.0-sprint2` em `d9a785b` reachable de main | ✅ verde |
+| 2.H — sync docs pós-Sprint-2 | `45d2ede` | STATUS+WAL+dashboard refletindo Sprint 2 closed; escopo docs-only; CI 6/6 verde (D2 ok) | ✅ verde |
+| 2.J — CLAUDE.md boot context | `07118f6` | Layer-1 system instructions (166 linhas, ~1.6K tokens); carrega em toda sessão @executor; protocolo nicknames + canais Discussions; escopo docs-only; CI 6/6 verde (D2 ok, flake D5 em 3.13 resolvido em rerun) | ✅ verde |
 
 ## Próximo gate — Sprint 3 (FM-10 / TD-003)
 
@@ -60,7 +71,7 @@ Fases planejadas (espelham Sprint 2): 3.A ADR-007 → 3.B api/streaming.md →
 3.C.1/3.C.2 implementação → 3.D adversarial battery → 3.E CLI wire → 3.F cov +
 TD-003 Resolved → 3.G merge --no-ff + tag v0.4.0-sprint3.
 
-Cursor de partida: `FROM <SHA da 2.H>` após este sync.
+Cursor de partida: `FROM 07118f6` (HEAD main pós-CLAUDE.md merge + 2.I sync).
 
 ## Dívidas registradas (pós-Sprint 2)
 
@@ -74,6 +85,8 @@ Cursor de partida: `FROM <SHA da 2.H>` após este sync.
 | **D6** | copilot GitHub App | check falha sem companion workflow (mesma classe que D4 mas para Copilot) | descartável (opção C) |
 | **D7** | Phase 2.G | tag `v0.3.0-sprint2` push pendente (HTTP 403 via git proxy local) | **fechada via UI**: tag publicada em `d9a785b` no remoto (lightweight) |
 | **D8** | Phase 2.G | tag remota `v0.3.0-sprint2` é lightweight; precedente (`v0.1.0-sprint0`, `v0.2.0-sprint1`) é annotated | aberta, cosmética (não-bloqueante) |
+| **D9** | Phase 2.J (descoberta no merge) | `git push origin --delete claude/add-claude-md` retornou HTTP 403 via local_proxy (mesmo padrão D7); branch remota não-deletada | aberta, cosmética |
+| **D10** | Phase 2.I (descoberta no ATO 1) | MCP `github-mcp-server` do @executor está no toolset core (52 tools, zero `discussion_*`); ativação de `discussions` é config do harness (`settings.json` `mcpServers` → endpoint `/mcp/x/all`), fora do escopo runtime do @executor. CLAUDE.md §3.5 documenta servidor esperado + fallback paste manual via @cnmfs. | aberta, cosmética operacional |
 
 ## Catálogo de documentos
 
@@ -131,6 +144,7 @@ Cursor de partida: `FROM <SHA da 2.H>` após este sync.
 
 | Path | Descrição | Estado |
 |---|---|---|
+| `CLAUDE.md` | Layer-1 system instructions lido pelo Claude Code no boot de toda sessão; nicknames + canais Discussions + fluxo + mandatos M1-M5 + invariantes + capacidades MCP (§3.5) + mapa de fontes (166→~210 linhas após §3.5) | vigente, **boot context** |
 | `README.md` | README do projeto | vigente |
 | `TECHNICAL_DEBT.md` | Registro de dívidas técnicas (TD-001 writer 89-94; TD-002 stubs; TD-003 FM-10 deferido Sprint 3) | vigente |
 | `pyproject.toml` | Config Python: deps, pytest, ruff, mypy, coverage (omit=[]) | vigente |

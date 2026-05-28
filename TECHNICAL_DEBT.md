@@ -6,21 +6,12 @@ This file tracks known debts in the codebase. Each entry is a fact, not an aspir
 
 ### TD-001: Coverage gap in `writer.py` lines 89-94
 
-**Created:** 2026-04-20 (Sprint 0)  
-**Module:** `src/atomic_dag/writer.py`  
-**Description:** The error-recovery branch (cleanup of orphan temp files when `os.write` or `os.fsync` raises) is not exercised by any test. Coverage in this module is 80% because of these five lines.  
-**Why deferred:** Exercising this path requires mocking `os.write` or `os.fsync` to raise mid-operation. The setup is non-trivial and adds little value at Sprint 0 given that the happy path and the SIGKILL path are both proven.  
-**Plan:** Sprint 1 — write a test using `unittest.mock` to inject failures and verify orphan-temp-file cleanup.  
-**Owner:** Sprint 1 lead.
-
-### TD-002: Stub modules awaiting implementation
-
-**Created:** 2026-04-20 (Sprint 0)  
-**Modules:** `src/atomic_dag/parser.py`, `dag.py`, `gate.py`, `cli.py`  
-**Description:** Four modules expose only public interfaces and `NotImplementedError` placeholders. They are excluded from coverage measurement via `pyproject.toml` `[tool.coverage.run] omit`.  
-**Why deferred:** Sprint 0 is infrastructure bootstrap. Implementing logic here would violate the sprint scope.  
-**Plan:** Sprint 1 — implement `parse_atom`, `compute_dag_levels`, `validate_gate`, and the real CLI commands. Remove each from the `omit` list as it is implemented.  
-**Owner:** Sprint 1 lead.
+**Created:** 2026-04-20 (Sprint 0)
+**Module:** `src/atomic_dag/writer.py`
+**Description:** The error-recovery branch (cleanup of orphan temp files when `os.write` or `os.fsync` raises) is not exercised by any test. Coverage in this module is 80% because of these five lines.
+**Why deferred:** Exercising this path requires mocking `os.write` or `os.fsync` to raise mid-operation. The setup is non-trivial and adds little value at Sprint 0 given that the happy path and the SIGKILL path are both proven.
+**Plan (atualizado 2026-05-28):** previsão original Sprint 1 NÃO executada; reprogramado para Sprint 5 junto com `reconcile` command. `writer.py` FM-02 já fechado por `write_atomic` (ADR-004); a dívida residual é apenas o branch error-recovery (89-94) que precisa de mock de OSError. Cov 80% mantida; agregado ponderado puxa 98.54%, não bloqueia M3 (≥95% global).
+**Owner:** Sprint 5 lead.
 
 ### TD-003: No FMEA regression test for FM-10 yet
 
@@ -47,7 +38,19 @@ Sprint 2 (`transitions.md §8`).
 
 ## Resolved Debts
 
-_None yet — this is the first sprint._
+### TD-002 (Resolved 2026-05-28): Stub modules implemented
+
+**Created:** 2026-04-20 (Sprint 0)
+**Resolved:** 2026-05-28 (Sprint 2 close + 2.J)
+**Modules:** `src/atomic_dag/parser.py`, `dag.py`, `gate.py`, `cli.py`
+**Resolution:** todos os 4 módulos implementados ao longo de Sprint 1 e Sprint 2:
+- `parser.py` — Sprint 1; extensão `replace_state_in_frontmatter` em 2.C.1 (`45161a8`)
+- `dag.py` — Sprint 1
+- `gate.py` — Sprint 1
+- `cli.py` — Sprint 2.E `df90620` (wire `transition` command + `--json` + exit codes)
+
+Nenhum permanece em `[tool.coverage.run] omit` no `pyproject.toml`. Coverage global 98.54% em main `07118f6`, com `cli.py` 100%, `transitions.py` 100%, `parser.py` 99%, `writer.py` 80% (TD-001 residual). Suite 256/256 verde.
+
 
 ## Conventions
 
