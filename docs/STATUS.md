@@ -2,27 +2,33 @@
 
 > Catálogo vivo do repositório. Inventário de documentos relevantes,
 > estado da sprint corrente, gates fechados e dívidas em aberto.
-> Atualizado a cada fase do Sprint 2.
+> Atualizado a cada fase fechada (Sprint 2 concluído em `da46621`).
 
 ## Branch corrente
 
-- **Nome:** `claude/setup-atomic-dag-soc-K53NI`
-- **Base:** `2bfecc2f` (`main`)
-- **HEAD:** `1d5f18f`
-- **Commits ahead de main:** 7
+- **Nome:** `main` (Sprint 2 mergeada via PR #1)
+- **HEAD:** `da46621` (merge commit PR #1, Sprint 2 fechada)
+- **Tag mais recente:** `v0.3.0-sprint2` em `d9a785b` (publicada via UI; lightweight no remoto vs annotated local — D8 cosmético)
+- **Commits ahead de main:** 0 (mergeada em main)
 
-## Os 7 commits do Sprint 2 (do mais recente ao mais antigo)
+## Sprint 2 — 11 commits + 1 merge commit em `main` (todos verdes na matriz 3.11/3.12/3.13)
 
-| SHA | Fase | Data UTC | Mensagem |
-|---|---|---|---|
-| [`1d5f18f`](https://github.com/camillanapoles/atomic-dag-soc/commit/1d5f18f) | **2.C.2** | 2026-05-27 22:13 | `feat(transitions): execute_transition skeleton + happy path` |
-| [`267e06f`](https://github.com/camillanapoles/atomic-dag-soc/commit/267e06f) | **orientação** | 2026-05-17 14:03 | `docs(status): operator orientation artifacts — catalog, dashboard, human WAL` |
-| [`45161a8`](https://github.com/camillanapoles/atomic-dag-soc/commit/45161a8) | **2.C.1** | 2026-05-17 06:34 | `feat(parser): replace_state_in_frontmatter — surgical state mutation` |
-| [`1177c2a`](https://github.com/camillanapoles/atomic-dag-soc/commit/1177c2a) | **2.B** | 2026-05-17 05:38 | `docs(api): document transitions module public protocol` |
-| [`c40de0e`](https://github.com/camillanapoles/atomic-dag-soc/commit/c40de0e) | **2.A fix** | 2026-05-17 05:21 | `docs(adr): amend ADR-006 — restore ADR-003 §Lesson 3 ordering + 3 clarifs` |
-| [`e37bf56`](https://github.com/camillanapoles/atomic-dag-soc/commit/e37bf56) | **CI infra** | 2026-05-17 05:13 | `ci(workflow): trigger on push to claude/** + manual dispatch, dedupe via concurrency` |
-| [`dbcb0ce`](https://github.com/camillanapoles/atomic-dag-soc/commit/dbcb0ce) | **2.A** | 2026-05-17 04:27 | `docs(adr): ADR-006 sprint-2-refactor transitions specification` |
+| SHA | Fase | Mensagem |
+|---|---|---|
+| [`da46621`](https://github.com/camillanapoles/atomic-dag-soc/commit/da46621) | **2.G MERGE** | `Merge pull request #1 from camillanapoles/claude/setup-atomic-dag-soc-K53NI` |
+| [`d9a785b`](https://github.com/camillanapoles/atomic-dag-soc/commit/d9a785b) | **2.F** | `chore(2.f): raise cov-fail-under 80→95 + TECHNICAL_DEBT TD-004 FM-01` |
+| [`df90620`](https://github.com/camillanapoles/atomic-dag-soc/commit/df90620) | **2.E** | `feat(cli): wire transition command — execute_transition + --json + exit codes` |
+| [`086b823`](https://github.com/camillanapoles/atomic-dag-soc/commit/086b823) | **2.D** | `test(transitions): adversarial battery — SIGKILL ×50, perf, concurrency` |
+| [`04db5fa`](https://github.com/camillanapoles/atomic-dag-soc/commit/04db5fa) | STATUS | `docs(status): catalog 2.C.2 — execute_transition skeleton` |
+| [`1d5f18f`](https://github.com/camillanapoles/atomic-dag-soc/commit/1d5f18f) | **2.C.2** | `feat(transitions): execute_transition skeleton + happy path` |
+| [`267e06f`](https://github.com/camillanapoles/atomic-dag-soc/commit/267e06f) | orientação | `docs(status): operator orientation artifacts — catalog, dashboard, WAL` |
+| [`45161a8`](https://github.com/camillanapoles/atomic-dag-soc/commit/45161a8) | **2.C.1** | `feat(parser): replace_state_in_frontmatter — surgical state mutation` |
+| [`1177c2a`](https://github.com/camillanapoles/atomic-dag-soc/commit/1177c2a) | **2.B** | `docs(api): document transitions module public protocol` |
+| [`c40de0e`](https://github.com/camillanapoles/atomic-dag-soc/commit/c40de0e) | **2.A fix** | `docs(adr): amend ADR-006 — restore ADR-003 §Lesson 3 ordering + 3 clarifs` |
+| [`e37bf56`](https://github.com/camillanapoles/atomic-dag-soc/commit/e37bf56) | CI infra | `ci(workflow): trigger on push:claude/** + manual dispatch (D1)` |
+| [`dbcb0ce`](https://github.com/camillanapoles/atomic-dag-soc/commit/dbcb0ce) | **2.A** | `docs(adr): ADR-006 sprint-2-refactor transitions specification` |
 
+Suite final: 256/256 verdes. Cov global: 98.54%. Tag `v0.3.0-sprint2` em `d9a785b`.
 Autoria uniforme: `Camilla Napoles <cnmfs@cesar.school>`.
 
 ## Gates fechados (validação canônica = CI 3/3 nas matrizes 3.11/3.12/3.13)
@@ -34,18 +40,40 @@ Autoria uniforme: `Camilla Napoles <cnmfs@cesar.school>`.
 | 2.B — public protocol docs | `1177c2a` | `docs/api/transitions.md` com contrato observável | ✅ verde |
 | 2.C.1 — `replace_state_in_frontmatter` | `45161a8` | Adição pura a `parser.py`, 27 herdados + 15 novos verdes | ✅ verde |
 | 2.C.2 — execute_transition skeleton | `1d5f18f` | `transitions.py` 100% cov, 30 testes verdes, idempotência §5 antes do FSM | ✅ verde |
+| 2.D — adversarial battery | `086b823` | SIGKILL ×50 α.3 determinístico (50/50 in-critical-window, zero D11 violation); perf p99 < 100ms; concurrency 4-proc | ✅ verde |
+| 2.E — CLI wire | `df90620` | `atomic-dag transition` com `--json` e exit codes 0/1/2 (D6); 12 herdados + 12 novos verdes | ✅ verde |
+| 2.F — cov bump + TD-004 | `d9a785b` | `cov-fail-under` 80→95 (gate atingido com global 98.54%); TD-004 FM-01 documentada | ✅ verde |
+| 2.G — merge to main | `da46621` | PR #1 mergeado `--no-ff`; tag `v0.3.0-sprint2` em `d9a785b` reachable de main | ✅ verde |
 
-## Próximo gate — 2.D (aguardando)
+## Próximo gate — Sprint 3 (FM-10 / TD-003)
 
-`tests/test_transitions_sigkill.py + _performance.py + _concurrency.py` — testes adversariais (SIGKILL ×50, perf p99 < 100ms, concorrência 4-proc). Cursor de partida: `FROM 1d5f18f`. Trava I8: plano de tradução do orquestrador + "go 2.D" explícito antes de qualquer linha de código.
+Sprint 2 fechada em `da46621` (merge PR #1). Próxima sprint endereça **FM-10
+closure** — `tick_streaming` não chama `advance_cursor`, RPN=162 (highest open
+no FMEA SOC V4). TD-003 registrado para fechamento em Sprint 3 desde Sprint 0.
 
-## Dívidas registradas (destino MPF_LOG no commit 2.H)
+Pré-condição descoberta na derivada de caminho pós-Sprint-2: o port de
+`tick_streaming`/`advance_cursor` planejado originalmente para Sprint 1 não
+ocorreu. Sprint 3 portará primeiro, depois implementará o fix, depois o
+regression test red→green.
+
+Fases planejadas (espelham Sprint 2): 3.A ADR-007 → 3.B api/streaming.md →
+3.C.1/3.C.2 implementação → 3.D adversarial battery → 3.E CLI wire → 3.F cov +
+TD-003 Resolved → 3.G merge --no-ff + tag v0.4.0-sprint3.
+
+Cursor de partida: `FROM <SHA da 2.H>` após este sync.
+
+## Dívidas registradas (pós-Sprint 2)
 
 | ID | Origem | Descrição | Estado |
 |---|---|---|---|
 | **D1** | `e37bf56` | `ci.yml` estendido (push:claude/** + workflow_dispatch + concurrency) fora da sequência planejada de 15 commits | aberta |
 | **D2** | observação pós-`e37bf56` | concurrency group não deduplica push:claude/** vs pull_request:synchronize (refs divergentes); dois runs verdes redundantes por push | aberta |
 | ~~D3~~ | ADR-006 (não-citação) | citação fraca de §Lesson 1 em `transitions.md §9` e ADR-006 header | **fechada em `45161a8`** |
+| **D4** | claude GitHub App | check falha sem companion workflow no repo (`@claude` mentions disparam app sem rota) | descartável (opção C: ignorar conscientemente) |
+| **D5** | Phase 2.D | `ci.yml` lacks `-m "not slow"`; slow tests rodam em CI até filter ser adicionado | aberta |
+| **D6** | copilot GitHub App | check falha sem companion workflow (mesma classe que D4 mas para Copilot) | descartável (opção C) |
+| **D7** | Phase 2.G | tag `v0.3.0-sprint2` push pendente (HTTP 403 via git proxy local) | **fechada via UI**: tag publicada em `d9a785b` no remoto (lightweight) |
+| **D8** | Phase 2.G | tag remota `v0.3.0-sprint2` é lightweight; precedente (`v0.1.0-sprint0`, `v0.2.0-sprint1`) é annotated | aberta, cosmética (não-bloqueante) |
 
 ## Catálogo de documentos
 

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>atomic-dag-soc — Sprint 2 Dashboard</title>
+<title>atomic-dag-soc — Sprint 2 Dashboard (closed)</title>
 <style>
   :root {
     --bg: #0f1115;
@@ -123,12 +123,12 @@
 </head>
 <body>
 
-<h1>atomic-dag-soc — Sprint 2 Dashboard</h1>
+<h1>atomic-dag-soc — Sprint 2 Dashboard (closed)</h1>
 <div class="meta">
-  Branch <strong>claude/setup-atomic-dag-soc-K53NI</strong> &middot;
-  HEAD <a href="https://github.com/camillanapoles/atomic-dag-soc/commit/45161a8">45161a8</a> &middot;
-  5 commits ahead of <a href="https://github.com/camillanapoles/atomic-dag-soc/commit/2bfecc2f">2bfecc2f</a> (main) &middot;
-  Última fase fechada: <strong>2.C.1</strong>
+  Branch <strong>main</strong> &middot;
+  HEAD <a href="https://github.com/camillanapoles/atomic-dag-soc/commit/da46621">da46621</a> (merge PR #1) &middot;
+  Tag <a href="https://github.com/camillanapoles/atomic-dag-soc/releases/tag/v0.3.0-sprint2"><strong>v0.3.0-sprint2</strong></a> at <a href="https://github.com/camillanapoles/atomic-dag-soc/commit/d9a785b">d9a785b</a> &middot;
+  Sprint 2 <strong>closed</strong>, awaiting Sprint 3 (FM-10 / TD-003)
 </div>
 
 <h2>Roadmap Sprint 2 — fases 2.A → 2.H</h2>
@@ -146,24 +146,24 @@
       <div><div class="id">2.C.1</div><div class="label">parser helper</div></div>
       <div class="status-dot"></div>
     </div>
-    <div class="phase current">
+    <div class="phase done">
       <div><div class="id">2.C.2</div><div class="label">skeleton + happy path</div></div>
       <div class="status-dot"></div>
     </div>
-    <div class="phase pending">
-      <div><div class="id">2.D</div><div class="label">testes ×50 SIGKILL + perf + concorrência</div></div>
+    <div class="phase done">
+      <div><div class="id">2.D</div><div class="label">SIGKILL ×50 α.3 + perf + conc</div></div>
       <div class="status-dot"></div>
     </div>
-    <div class="phase pending">
+    <div class="phase done">
       <div><div class="id">2.E</div><div class="label">wire CLI</div></div>
       <div class="status-dot"></div>
     </div>
-    <div class="phase pending">
-      <div><div class="id">2.F</div><div class="label">cov 80→95 + FM-01 mitigado</div></div>
+    <div class="phase done">
+      <div><div class="id">2.F</div><div class="label">cov 80→95 + TD-004</div></div>
       <div class="status-dot"></div>
     </div>
-    <div class="phase pending">
-      <div><div class="id">2.G→2.H</div><div class="label">tag v0.3.0 + MPF_LOG</div></div>
+    <div class="phase done">
+      <div><div class="id">2.G</div><div class="label">merge --no-ff + tag</div></div>
       <div class="status-dot"></div>
     </div>
   </div>
@@ -176,8 +176,43 @@
 
 <div class="grid grid-2" style="margin-top: 16px;">
   <div class="panel">
-    <h2 style="margin-top: 0;">Timeline dos 5 commits</h2>
+    <h2 style="margin-top: 0;">Timeline — 11 commits + merge (12 total)</h2>
     <ul class="timeline">
+      <li>
+        <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/da46621">da46621</a></span><span class="phase-tag">2.G MERGE</span></div>
+        <div class="when">2026-05-27 23:34 UTC</div>
+        <div class="what"><code style="font-family: var(--mono); font-size: 12px;">Merge pull request #1</code> from camillanapoles/claude/setup-atomic-dag-soc-K53NI</div>
+      </li>
+      <li>
+        <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/d9a785b">d9a785b</a></span><span class="phase-tag">Phase 2.F</span></div>
+        <div class="when">2026-05-27 23:26 UTC</div>
+        <div class="what"><code style="font-family: var(--mono); font-size: 12px;">chore(2.f):</code> raise cov-fail-under 80→95 + TECHNICAL_DEBT TD-004 FM-01</div>
+      </li>
+      <li>
+        <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/df90620">df90620</a></span><span class="phase-tag">Phase 2.E</span></div>
+        <div class="when">2026-05-27 23:20 UTC</div>
+        <div class="what"><code style="font-family: var(--mono); font-size: 12px;">feat(cli):</code> wire transition command — execute_transition + --json + exit codes</div>
+      </li>
+      <li>
+        <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/086b823">086b823</a></span><span class="phase-tag">Phase 2.D</span></div>
+        <div class="when">2026-05-27 23:04 UTC</div>
+        <div class="what"><code style="font-family: var(--mono); font-size: 12px;">test(transitions):</code> adversarial battery — SIGKILL ×50 (α.3 deterministic), perf, concurrency</div>
+      </li>
+      <li>
+        <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/04db5fa">04db5fa</a></span><span class="phase-tag">STATUS</span></div>
+        <div class="when">2026-05-27 22:31 UTC</div>
+        <div class="what"><code style="font-family: var(--mono); font-size: 12px;">docs(status):</code> catalog 2.C.2 — execute_transition skeleton</div>
+      </li>
+      <li>
+        <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/1d5f18f">1d5f18f</a></span><span class="phase-tag">Phase 2.C.2</span></div>
+        <div class="when">2026-05-27 22:13 UTC</div>
+        <div class="what"><code style="font-family: var(--mono); font-size: 12px;">feat(transitions):</code> execute_transition skeleton + happy path</div>
+      </li>
+      <li>
+        <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/267e06f">267e06f</a></span><span class="phase-tag">orientation</span></div>
+        <div class="when">2026-05-17 14:03 UTC</div>
+        <div class="what"><code style="font-family: var(--mono); font-size: 12px;">docs(status):</code> operator orientation artifacts — catalog, dashboard, human WAL</div>
+      </li>
       <li>
         <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/45161a8">45161a8</a></span><span class="phase-tag">Phase 2.C.1</span></div>
         <div class="when">2026-05-17 06:34 UTC</div>
@@ -207,14 +242,14 @@
   </div>
 
   <div class="panel">
-    <h2 style="margin-top: 0;">Dívidas (para MPF_LOG em 2.H)</h2>
+    <h2 style="margin-top: 0;">Dívidas (pós-Sprint 2)</h2>
     <div class="debt">
       <div class="id">D1 — ci.yml fora do plano</div>
       <div class="body">
         Em <code style="font-family: var(--mono); font-size: 12px;">e37bf56</code>, <code style="font-family: var(--mono); font-size: 12px;">ci.yml</code> estendido com
         <code style="font-family: var(--mono); font-size: 12px;">push:claude/**</code> + <code style="font-family: var(--mono); font-size: 12px;">workflow_dispatch</code> + <code style="font-family: var(--mono); font-size: 12px;">concurrency</code>.
         Fora da sequência planejada de 15 commits. Necessário para destravar CI por-push;
-        não-revertido. Registrar verbatim em MPF_LOG.
+        não-revertido. Aberta.
       </div>
     </div>
     <div class="debt">
@@ -226,7 +261,7 @@
         (<code style="font-family: var(--mono); font-size: 12px;">refs/heads/...</code> vs <code style="font-family: var(--mono); font-size: 12px;">refs/pull/N/merge</code>).
         Resultado: dois runs verdes redundantes por push enquanto PR aberta.
         Candidato a <code style="font-family: var(--mono); font-size: 12px;">concurrency.group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}</code>
-        em sprint futura. Não-revertido.
+        em sprint futura. Aberta.
       </div>
     </div>
     <div class="debt debt-closed">
@@ -239,68 +274,119 @@
         "invariante de escopo Sprint 2; §Lesson 1 literal = omit-list".
       </div>
     </div>
+    <div class="debt">
+      <div class="id">D4 — claude GitHub App check failing</div>
+      <div class="body">
+        Check do GitHub App "Claude Code" falha em PRs porque <strong>não existe
+        <code style="font-family: var(--mono); font-size: 12px;">.github/workflows/claude.yml</code></strong> no repo.
+        Disparou em todo <code style="font-family: var(--mono); font-size: 12px;">@claude</code> mention.
+        Ortogonal ao <code style="font-family: var(--mono); font-size: 12px;">ci.yml quality</code> (canônico) — não bloqueia gates.
+        <strong>Opção C aceita: ignorar conscientemente.</strong> Descartável.
+      </div>
+    </div>
+    <div class="debt">
+      <div class="id">D5 — ci.yml lacks <code>-m "not slow"</code></div>
+      <div class="body">
+        Em Phase 2.D, marker <code style="font-family: var(--mono); font-size: 12px;">slow</code> registrado em
+        <code style="font-family: var(--mono); font-size: 12px;">pyproject.toml</code> mas
+        <code style="font-family: var(--mono); font-size: 12px;">.github/workflows/ci.yml</code> não filtra em
+        <code style="font-family: var(--mono); font-size: 12px;">-m "not slow"</code>: SIGKILL ×50 + perf rodam em CI
+        free-tier runners. Risco perf flaky em runners lentos. Não-revertido. Aberta.
+      </div>
+    </div>
+    <div class="debt">
+      <div class="id">D6 — copilot GitHub App check failing</div>
+      <div class="body">
+        Mesma classe que D4: GitHub App "Copilot" disparou em <code style="font-family: var(--mono); font-size: 12px;">@copilot</code> mention sem
+        companion workflow no repo. Descartável (opção C).
+      </div>
+    </div>
+    <div class="debt debt-closed">
+      <div class="id">~~D7 — tag v0.3.0-sprint2 push HTTP 403~~</div>
+      <div class="body">
+        Em Phase 2.G, <code style="font-family: var(--mono); font-size: 12px;">git push origin refs/tags/v0.3.0-sprint2</code>
+        retornou HTTP 403 via <code style="font-family: var(--mono); font-size: 12px;">local_proxy</code> do agente;
+        <code style="font-family: var(--mono); font-size: 12px;">gh</code> CLI indisponível no ambiente.
+        <strong>Fechada via UI</strong>: tag publicada manualmente pela operadora em
+        <code style="font-family: var(--mono); font-size: 12px;">d9a785b</code> (reachable de main via merge commit).
+      </div>
+    </div>
+    <div class="debt">
+      <div class="id">D8 — tag lightweight vs precedente annotated</div>
+      <div class="body">
+        Tag remota <code style="font-family: var(--mono); font-size: 12px;">v0.3.0-sprint2</code> é
+        <strong>lightweight</strong> (criada via UI); precedente
+        (<code style="font-family: var(--mono); font-size: 12px;">v0.1.0-sprint0</code>,
+        <code style="font-family: var(--mono); font-size: 12px;">v0.2.0-sprint1</code>) é annotated.
+        Aponta para o commit correto (<code style="font-family: var(--mono); font-size: 12px;">d9a785b</code>); discrepância apenas
+        no tipo. Aberta cosmética; não-bloqueante.
+      </div>
+    </div>
   </div>
 </div>
 
-<h2>Critérios de verificação das fases pendentes</h2>
+<h2>Critérios atingidos por fase (Sprint 2 closed)</h2>
 <div class="panel criteria">
   <details>
-    <summary>2.C.2 — execute_transition skeleton + happy path</summary>
+    <summary>✅ 2.C.2 — execute_transition skeleton + happy path (<code>1d5f18f</code>)</summary>
     <ul>
-      <li>Primeira linha de <code>src/atomic_dag/transitions.py</code>; cursor FROM <code>45161a8</code></li>
-      <li>Implementa <code>execute_transition</code> em ordem D1: <code>parse → gate (SEMPRE) → fsm → route → replace_state → write_atomic → wal.log_event (ÚNICO)</code></li>
-      <li>Happy path: cada ação válida da matriz FSM produz a transição correta + 1 entrada WAL com todos os campos D4 obrigatórios</li>
-      <li><code>TransitionResult</code> frozen, <code>__bool__ = success</code>, 8 campos D5</li>
-      <li>Cobertura honesta global ≥ 95% após esta fase</li>
+      <li>Primeira escrita em <code>src/atomic_dag/transitions.py</code>; cursor FROM <code>45161a8</code></li>
+      <li>Ordem D1 final: <code>parse → gate (SEMPRE) → fsm → route → replace_state → write_atomic → wal.log_event (ÚNICO)</code></li>
+      <li>Idempotência por replay ANTES do FSM (refactor pós-Copilot review; §5 verbatim)</li>
+      <li><code>TransitionResult</code> frozen, <code>__bool__ = success</code>, 8 campos</li>
+      <li><code>transitions.py</code> 100% cobertura, 30 testes verdes</li>
       <li>CI 3/3 success em 3.11/3.12/3.13</li>
     </ul>
   </details>
   <details>
-    <summary>2.D — testes adversariais (SIGKILL ×50, perf, concorrência)</summary>
+    <summary>✅ 2.D — adversarial battery (<code>086b823</code>)</summary>
     <ul>
-      <li><code>test_transition_survives_sigkill</code> parametrize range(50): <code>.md</code> íntegro + WAL parseável + invariante D11 (disco nunca atrasa WAL)</li>
-      <li>RF-2.6 perf: p99 &lt; 100 ms em projeto até 100 átomos</li>
-      <li>Concorrência: 4 procs em átomos distintos → 4 entradas WAL válidas em ordem de chegada</li>
-      <li>Cada cláusula do <code>transitions.md</code> §10 obriga 1 teste passing</li>
+      <li>SIGKILL α.3 determinístico: 50/50 trials in_critical_window, ZERO violação D11</li>
+      <li>Estratégia: subprocess monkey-patch de <code>wal.log_event</code> com SIGSTOP antes do append + parent SIGKILL via <code>waitpid(WUNTRACED)</code></li>
+      <li>Perf p99 &lt; 100 ms (RF-2.6, 100 calls)</li>
+      <li>Concorrência 4-proc em átomos distintos → 4 WAL lines parsáveis</li>
+      <li>D4 (uniform random) rejeitada após gate empírico falhar 1/50; substituída por α.3</li>
     </ul>
   </details>
   <details>
-    <summary>2.E — wire CLI</summary>
+    <summary>✅ 2.E — wire CLI (<code>df90620</code>)</summary>
     <ul>
-      <li>Comando <code>atomic-dag transition</code> conectado a <code>execute_transition</code></li>
-      <li>Saída texto + JSON; flags consistentes com <code>validate</code>/<code>status</code></li>
+      <li>Comando <code>atomic-dag --project P transition ATOM_ID ACTION [--json]</code></li>
       <li>Exit codes D6: 0 sucesso (incl. idempotente, gate-fail-em-check→returned); 1 op (FSM-invalid, terminal); 2 estrutural</li>
       <li>Mensagens de erro nomeiam <code>atom_id</code> + <code>action</code> + razão (RF-2.3)</li>
+      <li><code>cli.py</code> 100% cobertura (2 pragmas justificados: race AtomNotFoundError + <code>__main__</code> guard)</li>
+      <li>12 herdados de <code>test_cli.py</code> inalterados + 12 novos S13-S24</li>
     </ul>
   </details>
   <details>
-    <summary>2.F — cov-fail-under 80 → 95 + TECHNICAL_DEBT FM-01</summary>
+    <summary>✅ 2.F — cov bump + TD-004 (<code>d9a785b</code>)</summary>
     <ul>
-      <li><code>pyproject.toml</code>: <code>--cov-fail-under=95</code></li>
-      <li><code>TECHNICAL_DEBT.md</code>: entrada FM-01 mitigado (Sprint 5 fecha real)</li>
-      <li>CI ainda 3/3 com novo threshold</li>
+      <li><code>pyproject.toml</code>: <code>--cov-fail-under=95</code> (margem 3.54 pp; global 98.54%)</li>
+      <li><code>TECHNICAL_DEBT.md</code>: TD-004 FM-01 mitigated documentada (O_APPEND + payload &lt; PIPE_BUF; closure Sprint 5)</li>
+      <li>CI 3/3 verde com novo threshold</li>
     </ul>
   </details>
   <details>
-    <summary>2.G — tag v0.3.0-sprint2</summary>
+    <summary>✅ 2.G — merge --no-ff + tag (<code>da46621</code>)</summary>
     <ul>
-      <li>Tag anotada criada após CI verde</li>
-      <li>PR #1 sai de draft (única transição out-of-draft permitida no Sprint 2 por I7)</li>
+      <li>PR #1 mergeado em main com merge commit (preserva 11 SHAs reachable)</li>
+      <li>Tag <code>v0.3.0-sprint2</code> em <code>d9a785b</code> (lightweight via UI; D8 cosmética aberta)</li>
+      <li>Sprint 2 closed.</li>
     </ul>
   </details>
   <details>
-    <summary>2.H — MPF_LOG.md</summary>
+    <summary>Próximo gate — Sprint 3 (FM-10 / TD-003)</summary>
     <ul>
-      <li>Entrada datada com MPF computado pós-Sprint 2</li>
-      <li>Registra D1, D2 verbatim</li>
-      <li>Fix-forward header de ADR-006 (citação de §Lesson 1)</li>
-      <li>Atualiza mandato PARTE 5</li>
+      <li>Port de <code>tick_streaming</code> / <code>advance_cursor</code> (planejado Sprint 1, não executado)</li>
+      <li>Fix do coupling FM-10 (RPN 162, highest open no FMEA SOC V4)</li>
+      <li>Regression test <code>tests/test_fm10_regression.py</code> red→green</li>
+      <li>Fases espelhando Sprint 2: 3.A ADR-007 → ... → 3.G merge + tag v0.4.0-sprint3</li>
     </ul>
   </details>
 </div>
 
 <footer>
-  Gerado em 2026-05-17. Dados embutidos no HTML; abre offline.
+  Gerado em 2026-05-17, atualizado em 2026-05-28 (Phase 2.H sync pós-merge). Dados embutidos no HTML; abre offline.
   Para regenerar, edite este arquivo manualmente até que exista <code style="font-family: var(--mono); font-size: 12px;">scripts/build_dashboard.py</code> (fora do escopo Sprint 2).
 </footer>
 

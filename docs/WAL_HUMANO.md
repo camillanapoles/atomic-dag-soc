@@ -254,16 +254,146 @@ não contra o instinto do momento.
 
 ---
 
+## Phase 2.D — Adversarial battery (2026-05-27 23:04 UTC, SHA `086b823`)
+
+Bateria adversarial para `transitions.py`: SIGKILL ×50, performance p99,
+concorrência multi-process. Três arquivos novos em `tests/`, zero modificação
+em `src/`.
+
+**Decisão arquitetural — SIGKILL α.3 após D4 evidence-driven failure.** A
+primeira estratégia (D4: parent-side uniform random sleep ∈ [0, 50ms] +
+SIGKILL) foi instrumentada com gate empírico: ≥40/50 trials precisavam landar
+em `in_critical_window` (janela entre `write_atomic` e `log_event`) para o
+fuzzer ser considerado adequado. Resultado medido: **1/50 in_critical_window,
+6/50 pre_write, 43/50 post_log**. A janela crítica é microsegundo-escala
+(dict construction + json.dumps + file append < 1ms); o sleep range de 50ms
+quase sempre cai antes (kill cedo) ou depois (kill tardio) da janela. Gate
+falhou — parou per §9 stop condition, sem implementar D1 sem autorização.
+
+Operadora autorizou α.3: child subprocess **monkey-patch de `wal.log_event`
+para SIGSTOP antes do append real**. Parent usa `waitpid(WUNTRACED)` para
+bloquear até o stop chegar; aí dispara SIGKILL. Por construção, o kill cai
+deterministicamente após `write_atomic` completar e antes de qualquer linha
+de WAL ser escrita. Resultado: **50/50 in_critical_window, zero violação D11**.
+
+Lição L4: **gate empírico falhando é informação, não falha do agente**. D4
+deu 1/50 não por bug — a estratégia simplesmente não estressava a janela.
+O reporting honesto da distribuição abriu caminho para α.3 ser pedida pela
+operadora; tentar inflar D4 ("provavelmente OK") teria mascarado o gap.
+
+**Pattern reutilizável:** monkey-patch + SIGSTOP é viável para falsificar
+qualquer invariante "X acontece antes de Y" onde Y é uma função
+substituível. Documentado no próprio test_transitions_sigkill.py para
+referência futura.
+
+Dívidas D5 (ci.yml lacks `-m "not slow"` filter) e D6 (Copilot App check
+falhando análogo a D4) abertas nesta fase.
+
+---
+
+## Phase 2.E — CLI wire (2026-05-27 23:20 UTC, SHA `df90620`)
+
+Wire do comando `atomic-dag transition` ao `execute_transition`. Substitui
+o placeholder de Sprint 1.
+
+`atomic-dag --project P transition ATOM_ID ACTION [--json]` — atom_id (str)
+resolvido via `parse_atom_directory` para obter filepath; passado a
+`execute_transition`. Exit codes literais per D6 / transitions.md §6:
+
+- **0** — success (incluindo idempotent replay e gate-fail-on-check → returned)
+- **1** — operational (FSM-invalid, terminal state)
+- **2** — structural (atom_id não encontrado no projeto, parse error)
+
+Output JSON `--json` emite campos de `TransitionResult` direto, sem
+expansão do `gate_result` (que continua disponível no WAL). 12 testes
+herdados em `test_cli.py` inalterados + 12 novos S13-S24 cobrindo exit
+codes, schema JSON, replay idempotente, gate-routing em check, WAL
+end-to-end via CLI.
+
+Cobertura `cli.py`: **100%** (91/91 statements), com 2 pragmas
+justificados (race AtomNotFoundError defensivo + `if __name__ ==
+"__main__"` guard estruturalmente fora do alcance do CliRunner).
+
+Decisão pequena registrada: campo `wal_event_logged: bool` proposto na
+revisão (R1) e cancelado por redundância com `idempotent` (que já
+distingue "no-op replay" de "transição real").
+
+---
+
+## Phase 2.F — Cov bump + TD-004 (2026-05-27 23:26 UTC, SHA `d9a785b`)
+
+`pyproject.toml`: `addopts --cov-fail-under=80` → `--cov-fail-under=95`.
+`TECHNICAL_DEBT.md`: TD-004 adicionada após TD-003.
+
+TD-004 — **FM-01 concurrent WAL writers (mitigated, not closed)**. Mitigação
+atual: `O_APPEND` semantics + payload < PIPE_BUF (4096 bytes) → atomic line
+append em POSIX. Concurrent transitions em átomos distintos são seguros
+(testado em test_transitions_concurrency.py). Concurrent transitions no
+mesmo átomo ficam fora do contrato Sprint 2 (`transitions.md §8`).
+Fechamento real: Sprint 5 com per-atom locking + reconcile.
+
+Gate canônico de 95% atingido pela margem 3.54 pp (global 98.54%).
+`writer.py` continua em 80% (TD-001 herdado, branch de erro orphan-cleanup
+não-testado) mas o agregado pondera por número de statements: 5 misses em
+484 total = ~1% do peso, não move o threshold.
+
+Zero mudança em `src/` ou `tests/` — chore puramente de housekeeping.
+Diff total: 2 arquivos, 16 inserções, 1 deleção.
+
+---
+
+## Phase 2.G — Merge to main (2026-05-27 23:34 UTC, SHA `da46621`)
+
+PR #1 mergeado em main com estratégia `--no-ff` (merge commit).
+
+**Por que não squash:** STATUS.md, este WAL_HUMANO, ADR-006, todos
+referenciam SHAs específicos dos 11 commits do branch. Squash colapsaria
+em 1 SHA e os referências apontariam para commits órfãos.
+
+**Por que não rebase:** rebase reescreve hashes; quebraria os mesmos
+links. Linear history não é objetivo declarado do projeto.
+
+**Merge commit `--no-ff`:** preserva os 11 SHAs como ancestrais
+reachable de `main`. `git log da46621` mostra a história completa.
+Tag `v0.3.0-sprint2` em `d9a785b` continua válida — `d9a785b` é
+reachable de `main` via `da46621`.
+
+**Blocker observado — D7:** tag `v0.3.0-sprint2` foi criada localmente
+(annotated) em `d9a785b`, mas `git push origin refs/tags/...` falhou
+com HTTP 403 via `local_proxy`. Tentativa A (`gh release create`)
+indisponível (gh CLI ausente do ambiente). **Decisão β (postergar
+push, manter SHA estável):** aceitar — `d9a785b` é SHA imutável, tag
+idempotente em qualquer momento futuro, postergação não muda alvo.
+Dívida D7 registrada.
+
+D7 posteriormente fechada via UI (operadora criou release manualmente).
+Discrepância cosmética detectada: tag remota é **lightweight**
+(criada via UI sem objeto annotated), precedente `v0.1.0-sprint0` /
+`v0.2.0-sprint1` é **annotated**. Registrada como D8 (cosmética,
+não-bloqueante).
+
+**Sprint 2 estatística final:**
+
+- 11 commits + 1 merge commit em main, todos com cursor FROM/THIS/GOTO
+- Autoria uniforme `Camilla Napoles <cnmfs@cesar.school>` (γ.0 ativo em todos)
+- Suite final: 256/256 verde
+- Coverage: `transitions.py` 100%, global 98.54%
+- CI canônico: 3/3 matrizes verde em cada fase + no merge
+- D11 falsificável e validada: 50/50 in critical window, zero violação
+- Dívidas abertas: D1, D2, D4 (descartável), D5, D6 (descartável), D8
+- Dívidas fechadas: D3 (em `45161a8`), D7 (via UI pós-merge)
+- TD-001 (Sprint 0 herdada), TD-003 (Sprint 3 alvo), TD-004 (Sprint 5 alvo)
+
+---
+
 ## 7. Onde estamos, em uma frase
 
-Cinco commits no branch `claude/setup-atomic-dag-soc-K53NI`,
-HEAD `45161a8`, CI 3/3 verde nas matrizes 3.11/3.12/3.13, todos
-os artefatos de spec (ADR-006, transitions.md) e o primeiro
-artefato de código (replace_state_in_frontmatter) entregues e
-auditados, duas dívidas registradas para o 2.H, próxima fase
-(2.C.2 — `execute_transition` skeleton + happy path) travada
-aguardando o plano de tradução do orquestrador e o "go 2.C.2"
-explícito da operadora.
+Sprint 2 fechada em `da46621` (merge PR #1 em main). 11 commits + 1
+merge commit, autoria uniforme, todos com cursor narrativo. Suite
+256/256 verde, cov global 98.54%, `transitions.py` 100%. Tag
+`v0.3.0-sprint2` publicada em `d9a785b` (lightweight; D8). Próxima
+fase: Sprint 3 endereçando FM-10/TD-003 (port de `tick_streaming` +
+fix + regression test red→green).
 
 ---
 
