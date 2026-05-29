@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>atomic-dag-soc — Catálogo (Sprint 2 + 2.H + 2.J closed)</title>
+<title>atomic-dag-soc — Catálogo (Sprint 2 + 2.H/2.I/2.J/2.K closed)</title>
 <style>
   :root {
     --bg: #0f1115;
@@ -123,13 +123,14 @@
 </head>
 <body>
 
-<h1>atomic-dag-soc — Catálogo (Sprint 2 + 2.H + 2.J closed)</h1>
+<h1>atomic-dag-soc — Catálogo (Sprint 2 + 2.H/2.I/2.J/2.K closed)</h1>
 <div class="meta">
   Branch <strong>main</strong> &middot;
-  HEAD <a href="https://github.com/camillanapoles/atomic-dag-soc/commit/07118f6">07118f6</a> (merge PR #3 CLAUDE.md) &middot;
+  HEAD <a href="https://github.com/camillanapoles/atomic-dag-soc/commit/39d020c">39d020c</a> (merge PR #7 — 2.I sync) &middot;
   Tag <a href="https://github.com/camillanapoles/atomic-dag-soc/releases/tag/v0.3.0-sprint2"><strong>v0.3.0-sprint2</strong></a> at <a href="https://github.com/camillanapoles/atomic-dag-soc/commit/d9a785b">d9a785b</a> &middot;
-  CLAUDE.md boot context ativo (Layer-1) &middot;
-  Sprint 2 + 2.H + 2.J <strong>closed</strong>, awaiting Sprint 3 (FM-10 / TD-003)
+  CLAUDE.md boot context (§3.5 MCP) ativo &middot;
+  Protocolo PR-comments oficial (2.K) &middot;
+  Sprint 2 + 2.H/2.I/2.J/2.K <strong>closed</strong>, awaiting Sprint 3 (FM-10 / TD-003)
 </div>
 
 <h2>Roadmap Sprint 2 — fases 2.A → 2.H</h2>
@@ -179,6 +180,16 @@
   <div class="panel">
     <h2 style="margin-top: 0;">Timeline — 11 commits + merge (12 total)</h2>
     <ul class="timeline">
+      <li>
+        <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/39d020c">39d020c</a></span><span class="phase-tag">2.I MERGE</span></div>
+        <div class="when">2026-05-29 03:54 UTC</div>
+        <div class="what"><code style="font-family: var(--mono); font-size: 12px;">Merge pull request #7</code> from camillanapoles/claude/sync-status-2i — docs(2.i) sync catalog + §3.5 MCP capabilities</div>
+      </li>
+      <li>
+        <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/838ce11">838ce11</a></span><span class="phase-tag">Phase 2.I</span></div>
+        <div class="when">2026-05-28 20:01 UTC</div>
+        <div class="what"><code style="font-family: var(--mono); font-size: 12px;">docs(2.i):</code> sync catalog (STATUS+TD+dashboard HEAD da46621→07118f6) + CLAUDE.md §3.5 MCP (core vs /x/all + fallbacks); TD-002 Resolved; D9+D10 registradas</div>
+      </li>
       <li>
         <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/07118f6">07118f6</a></span><span class="phase-tag">2.J MERGE</span></div>
         <div class="when">2026-05-28 19:15 UTC</div>
@@ -350,6 +361,22 @@
         Cosmética operacional, não-bloqueante. Aberta.
       </div>
     </div>
+    <div class="debt" style="border-left-color: var(--ok);">
+      <div class="id"><s>D11</s> — Pages root sem index.html (fechada em 2.K)</div>
+      <div class="body">
+        Phase 2.I (descoberta pós-merge): Pages habilitado em <code style="font-family: var(--mono); font-size: 12px;">Settings → Pages → Source: main /docs</code>;
+        root URL <code style="font-family: var(--mono); font-size: 12px;">https://camillanapoles.github.io/atomic-dag-soc/</code> retornava 404 sem <code style="font-family: var(--mono); font-size: 12px;">index.html</code> em <code style="font-family: var(--mono); font-size: 12px;">/docs</code>.
+        <strong>Fechada em 2.K:</strong> <code style="font-family: var(--mono); font-size: 12px;">docs/index.html</code> criado com meta-refresh redirect para <code style="font-family: var(--mono); font-size: 12px;">dashboard.html</code>.
+      </div>
+    </div>
+    <div class="debt">
+      <div class="id">D12 — proxy do @executor bloqueia *.github.io</div>
+      <div class="body">
+        Phase 2.I (descoberta no ATO 4): <code style="font-family: var(--mono); font-size: 12px;">local_proxy</code> do @executor filtra outbound para <code style="font-family: var(--mono); font-size: 12px;">*.github.io</code>
+        (<code style="font-family: var(--mono); font-size: 12px;">x-deny-reason: host_not_allowed</code>); @executor não verifica Pages diretamente.
+        Cosmética operacional (config do harness, mesma classe que D7/D9/D10); fallback: @orquestrador verifica via conector. Aberta.
+      </div>
+    </div>
     <div class="debt">
       <div class="id">D8 — tag lightweight vs precedente annotated</div>
       <div class="body">
@@ -425,7 +452,7 @@
 </div>
 
 <footer>
-  Gerado em 2026-05-17, atualizado em 2026-05-28 (Phase 2.I sync pós-CLAUDE.md). Dados embutidos no HTML; abre offline.
+  Gerado em 2026-05-17, atualizado em 2026-05-29 (Phase 2.K mini — Pages root redirect + protocolo PR-comments oficial). Dados embutidos no HTML; abre offline.
   Para regenerar, edite este arquivo manualmente até que exista <code style="font-family: var(--mono); font-size: 12px;">scripts/build_dashboard.py</code> (fora do escopo Sprint 2).
 </footer>
 
