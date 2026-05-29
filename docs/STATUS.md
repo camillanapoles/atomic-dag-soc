@@ -6,16 +6,18 @@
 
 ## Branch corrente
 
-- **Nome:** `main` (Sprint 2 mergeada via PR #1; 2.H/2.I/2.J mergeadas via PRs #2/#7/#3 respectivamente)
-- **HEAD:** `39d020c` (merge PR #7 — 2.I sync catalog + CLAUDE.md §3.5)
+- **Nome:** `main` (Sprint 2 mergeada via PR #1; 2.H/2.I/2.J/2.K mergeadas via PRs #2/#7/#3/#8 respectivamente)
+- **HEAD:** `1d6217e` (merge PR #8 — 2.K Pages redirect + protocolo PR-comments oficial)
 - **Tag mais recente:** `v0.3.0-sprint2` em `d9a785b` (publicada via UI; lightweight no remoto vs annotated local — D8 cosmético)
 - **Commits ahead de main:** 0 (mergeada em main)
-- **Pages:** publicado em `https://camillanapoles.github.io/atomic-dag-soc/` (build automático via push to main em `/docs`); root redireciona para `/dashboard.html` (D11 fechada em 2.K)
+- **Pages:** publicado em `https://camillanapoles.github.io/atomic-dag-soc/` (build automático via push to main em `/docs`); root redireciona para `/dashboard.html` desde 2.K (D11 fechada)
 
 ### Fases pós-merge Sprint 2
 
 | SHA | Fase | Quando | Mensagem |
 |---|---|---|---|
+| [`1d6217e`](https://github.com/camillanapoles/atomic-dag-soc/commit/1d6217e) | **2.K MERGE** | 2026-05-29 19:02Z | `Merge pull request #8 from camillanapoles/claude/sync-2k-pages-protocol` |
+| [`1de7072`](https://github.com/camillanapoles/atomic-dag-soc/commit/1de7072) | **2.K** | 2026-05-29 13:32Z | `docs(2.k): Pages root redirect + protocolo PR-comments oficial` |
 | [`39d020c`](https://github.com/camillanapoles/atomic-dag-soc/commit/39d020c) | **2.I MERGE** | 2026-05-29 03:54Z | `Merge pull request #7 from camillanapoles/claude/sync-status-2i` |
 | [`838ce11`](https://github.com/camillanapoles/atomic-dag-soc/commit/838ce11) | **2.I** | 2026-05-28 20:01Z | `docs(2.i): sync catalog + add CLAUDE.md §3.5 MCP capabilities` |
 | [`07118f6`](https://github.com/camillanapoles/atomic-dag-soc/commit/07118f6) | **2.J MERGE** | 2026-05-28 19:15Z | `Merge pull request #3 from camillanapoles/claude/add-claude-md` |
@@ -59,6 +61,7 @@ Autoria uniforme: `Camilla Napoles <cnmfs@cesar.school>`.
 | 2.H — sync docs pós-Sprint-2 | `45d2ede` | STATUS+WAL+dashboard refletindo Sprint 2 closed; escopo docs-only; CI 6/6 verde (D2 ok) | ✅ verde |
 | 2.J — CLAUDE.md boot context | `07118f6` | Layer-1 system instructions (166 linhas, ~1.6K tokens); carrega em toda sessão @executor; protocolo nicknames + canais Discussions; escopo docs-only; CI 6/6 verde (D2 ok, flake D5 em 3.13 resolvido em rerun) | ✅ verde |
 | 2.I — sync catalog + §3.5 MCP | `39d020c` | HEAD bump da46621→07118f6; CLAUDE.md em catálogo; TD-002 Resolved; §3.5 documenta toolsets MCP + fallbacks; D9+D10 registradas; CI 6/6 verde D2 sem flake | ✅ verde |
+| 2.K — Pages root redirect + protocolo PR-comments oficial | `1d6217e` | docs/index.html meta-refresh; CLAUDE.md §3 fluxo híbrido Discussions+PR-comments oficial; D11 fechada; D12 registrada (proxy executor); CI 6/6 verde D2 sem flake | ✅ verde |
 
 ## Próximo gate — Sprint 3 (FM-10 / TD-003)
 
@@ -75,7 +78,7 @@ Fases planejadas (espelham Sprint 2): 3.A ADR-007 → 3.B api/streaming.md →
 3.C.1/3.C.2 implementação → 3.D adversarial battery → 3.E CLI wire → 3.F cov +
 TD-003 Resolved → 3.G merge --no-ff + tag v0.4.0-sprint3.
 
-Cursor de partida: `FROM 39d020c` (HEAD main pós-2.I merge + 2.K Pages redirect + protocolo PR-comments oficial).
+Cursor de partida: `FROM 1d6217e` (HEAD main pós-2.K merge + 2.L expandida com DOC-SELF-001 / README sync / CLAUDE.md §1 nota terminológica).
 
 ## Dívidas registradas (pós-Sprint 2)
 
@@ -93,6 +96,8 @@ Cursor de partida: `FROM 39d020c` (HEAD main pós-2.I merge + 2.K Pages redirect
 | **D10** | Phase 2.I (descoberta no ATO 1) | MCP `github-mcp-server` do @executor está no toolset core (52 tools, zero `discussion_*`); ativação de `discussions` é config do harness (`settings.json` `mcpServers` → endpoint `/mcp/x/all`), fora do escopo runtime do @executor. CLAUDE.md §3.5 documenta servidor esperado + fallback paste manual via @cnmfs. | aberta, cosmética operacional |
 | **D11** | Phase 2.I (descoberta pós-merge) | Pages habilitado (`Settings → Pages → Source: main /docs`); root URL `https://camillanapoles.github.io/atomic-dag-soc/` retornava 404 sem `index.html` em `/docs` | **fechada em 2.K**: `docs/index.html` criado com meta-refresh redirect para `dashboard.html` |
 | **D12** | Phase 2.I (descoberta no ATO 4) | `local_proxy` do @executor filtra outbound para `*.github.io` (`x-deny-reason: host_not_allowed`); @executor não verifica Pages diretamente | aberta, cosmética operacional (config do harness, mesma classe que D7/D9/D10); fallback: @orquestrador verifica via conector |
+| **D13** | Phase 2.I (descoberta pós-2.K por releitura) | Termo "falsificável" usado em CLAUDE.md §1 e README sem nota terminológica Popperiana anexa; risco de má leitura indutora de erro em pontos de boot/entrada (humano externo ou LLM externo lendo o repo via clone/busca) | **fechada parcialmente em 2.L**: CLAUDE.md §1 +nota; README +nota; reforço durável em ADR-007 §0 (Sprint 3) |
+| **A4** | Phase 2.I (descoberta pós-2.K por releitura) | README.md em main defasado: "Sprint 1 in progress 3/4 modules / 135 tests" vs realidade `1d6217e` (Sprint 2.K closed / 9 / 256) | **fechada em 2.L**: README reescrito integralmente |
 
 ## Catálogo de documentos
 
@@ -125,6 +130,7 @@ Cursor de partida: `FROM 39d020c` (HEAD main pós-2.I merge + 2.K Pages redirect
 | `STATUS.md` | Este arquivo: catálogo vivo | vigente |
 | `dashboard.html` | Painel estático offline com roadmap + timeline + dívidas | vigente |
 | `WAL_HUMANO.md` | WAL traduzido para narrativa humana (decisões + correções + lições) | vigente |
+| `DOC-SELF-001-atomic-dag-self.md` | Documentação auto-referente — Atomic-DAG explicado *como* um ATÔMICO do próprio Atomic-DAG (9 blocos Template Master, frontmatter válido, cursor I-WAL, ancorado em main@1d6217e); demonstra D4 por instanciação; ponte pedagógica para Sprint 6 / US-07 (meta-uso) — quando `.atomic-dag/state.json` gerenciar este arquivo como instância operacional | vigente, **artefato pedagógico** |
 
 ### Knowledge base (`knowledge/`)
 
