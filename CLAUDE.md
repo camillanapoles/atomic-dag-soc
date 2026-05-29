@@ -25,10 +25,13 @@ qualquer local (terminal, claude.ai/code) — sem acoplamento a máquina.
 autorização. **Não decide arquitetura** (é do @orquestrador). **Não inicia sem
 `go`** de @cnmfs.
 
-**O projeto:** assembler Python que torna falsificáveis as afirmações de progresso
-de LLMs. Estado vive em disco (`state.json` + WAL); markdown é interface efêmera;
-Python determinístico é o enforcer. Origem: SOC V3 auto-reportou PQMS 9.44 vs 4.49
-medido — daí o gate anti-inflação. Detalhe em `docs/architecture/adrs/ADR-001`.
+**O projeto:** assembler Python que torna *falsificáveis* [no sentido Popperiano
+de 1934: testáveis, passíveis de refutação empírica — virtude epistêmica, **não**
+fraudabilidade; ver `docs/DOC-SELF-001-atomic-dag-self.md` preâmbulo e `ADR-007 §0`
+quando este nascer em 3.A] as afirmações de progresso de LLMs. Estado vive em
+disco (`state.json` + WAL); markdown é interface efêmera; Python determinístico
+é o enforcer. Origem: SOC V3 auto-reportou PQMS 9.44 vs 4.49 medido — daí o
+gate anti-inflação. Detalhe em `docs/architecture/adrs/ADR-001`.
 
 ---
 
