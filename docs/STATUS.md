@@ -6,15 +6,18 @@
 
 ## Branch corrente
 
-- **Nome:** `main` (Sprint 2 mergeada via PR #1; 2.H mergeada via PR #2; CLAUDE.md mergeado via PR #3)
-- **HEAD:** `07118f6` (merge PR #3 — CLAUDE.md boot context instalado)
+- **Nome:** `main` (Sprint 2 mergeada via PR #1; 2.H/2.I/2.J mergeadas via PRs #2/#7/#3 respectivamente)
+- **HEAD:** `39d020c` (merge PR #7 — 2.I sync catalog + CLAUDE.md §3.5)
 - **Tag mais recente:** `v0.3.0-sprint2` em `d9a785b` (publicada via UI; lightweight no remoto vs annotated local — D8 cosmético)
 - **Commits ahead de main:** 0 (mergeada em main)
+- **Pages:** publicado em `https://camillanapoles.github.io/atomic-dag-soc/` (build automático via push to main em `/docs`); root redireciona para `/dashboard.html` (D11 fechada em 2.K)
 
 ### Fases pós-merge Sprint 2
 
 | SHA | Fase | Quando | Mensagem |
 |---|---|---|---|
+| [`39d020c`](https://github.com/camillanapoles/atomic-dag-soc/commit/39d020c) | **2.I MERGE** | 2026-05-29 03:54Z | `Merge pull request #7 from camillanapoles/claude/sync-status-2i` |
+| [`838ce11`](https://github.com/camillanapoles/atomic-dag-soc/commit/838ce11) | **2.I** | 2026-05-28 20:01Z | `docs(2.i): sync catalog + add CLAUDE.md §3.5 MCP capabilities` |
 | [`07118f6`](https://github.com/camillanapoles/atomic-dag-soc/commit/07118f6) | **2.J MERGE** | 2026-05-28 19:15Z | `Merge pull request #3 from camillanapoles/claude/add-claude-md` |
 | [`2e06aaf`](https://github.com/camillanapoles/atomic-dag-soc/commit/2e06aaf) | **2.J** | 2026-05-28 19:07Z | `docs: add CLAUDE.md — session boot context for @executor` |
 | [`45d2ede`](https://github.com/camillanapoles/atomic-dag-soc/commit/45d2ede) | **2.H MERGE** | 2026-05-28 18:52Z | `Merge pull request #2 from camillanapoles/claude/sync-sprint2-docs-2h` |
@@ -55,6 +58,7 @@ Autoria uniforme: `Camilla Napoles <cnmfs@cesar.school>`.
 | 2.G — merge to main | `da46621` | PR #1 mergeado `--no-ff`; tag `v0.3.0-sprint2` em `d9a785b` reachable de main | ✅ verde |
 | 2.H — sync docs pós-Sprint-2 | `45d2ede` | STATUS+WAL+dashboard refletindo Sprint 2 closed; escopo docs-only; CI 6/6 verde (D2 ok) | ✅ verde |
 | 2.J — CLAUDE.md boot context | `07118f6` | Layer-1 system instructions (166 linhas, ~1.6K tokens); carrega em toda sessão @executor; protocolo nicknames + canais Discussions; escopo docs-only; CI 6/6 verde (D2 ok, flake D5 em 3.13 resolvido em rerun) | ✅ verde |
+| 2.I — sync catalog + §3.5 MCP | `39d020c` | HEAD bump da46621→07118f6; CLAUDE.md em catálogo; TD-002 Resolved; §3.5 documenta toolsets MCP + fallbacks; D9+D10 registradas; CI 6/6 verde D2 sem flake | ✅ verde |
 
 ## Próximo gate — Sprint 3 (FM-10 / TD-003)
 
@@ -71,7 +75,7 @@ Fases planejadas (espelham Sprint 2): 3.A ADR-007 → 3.B api/streaming.md →
 3.C.1/3.C.2 implementação → 3.D adversarial battery → 3.E CLI wire → 3.F cov +
 TD-003 Resolved → 3.G merge --no-ff + tag v0.4.0-sprint3.
 
-Cursor de partida: `FROM 07118f6` (HEAD main pós-CLAUDE.md merge + 2.I sync).
+Cursor de partida: `FROM 39d020c` (HEAD main pós-2.I merge + 2.K Pages redirect + protocolo PR-comments oficial).
 
 ## Dívidas registradas (pós-Sprint 2)
 
@@ -87,6 +91,8 @@ Cursor de partida: `FROM 07118f6` (HEAD main pós-CLAUDE.md merge + 2.I sync).
 | **D8** | Phase 2.G | tag remota `v0.3.0-sprint2` é lightweight; precedente (`v0.1.0-sprint0`, `v0.2.0-sprint1`) é annotated | aberta, cosmética (não-bloqueante) |
 | **D9** | Phase 2.J (descoberta no merge) | `git push origin --delete claude/add-claude-md` retornou HTTP 403 via local_proxy (mesmo padrão D7); branch remota não-deletada | aberta, cosmética |
 | **D10** | Phase 2.I (descoberta no ATO 1) | MCP `github-mcp-server` do @executor está no toolset core (52 tools, zero `discussion_*`); ativação de `discussions` é config do harness (`settings.json` `mcpServers` → endpoint `/mcp/x/all`), fora do escopo runtime do @executor. CLAUDE.md §3.5 documenta servidor esperado + fallback paste manual via @cnmfs. | aberta, cosmética operacional |
+| **D11** | Phase 2.I (descoberta pós-merge) | Pages habilitado (`Settings → Pages → Source: main /docs`); root URL `https://camillanapoles.github.io/atomic-dag-soc/` retornava 404 sem `index.html` em `/docs` | **fechada em 2.K**: `docs/index.html` criado com meta-refresh redirect para `dashboard.html` |
+| **D12** | Phase 2.I (descoberta no ATO 4) | `local_proxy` do @executor filtra outbound para `*.github.io` (`x-deny-reason: host_not_allowed`); @executor não verifica Pages diretamente | aberta, cosmética operacional (config do harness, mesma classe que D7/D9/D10); fallback: @orquestrador verifica via conector |
 
 ## Catálogo de documentos
 

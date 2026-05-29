@@ -47,17 +47,21 @@ Ex.: `@executor: 3.A concluída, verbatim abaixo.`
 
 ---
 
-## 3. Canais (GitHub Discussions — fonte única de gestão)
+## 3. Canais (fluxo híbrido Discussions + PR-comments)
 
-Repo `camillanapoles/atomic-dag-soc` → Discussions.
+Inaugurado em fase 2.I (`838ce11`), oficializado em 2.K. Detalhes:
 
-| Canal | Categoria | Você | Função |
+| Canal | Localização | Você | Função |
 |---|---|---|---|
-| `[MEMÓRIA-ORQ]` | Announcements | LÊ | memória do @orquestrador |
-| `[MANDATO] Sprint N` | Announcements | LÊ e executa | instruções para você |
-| `[COMS] Sprint N` | General | LÊ e ESCREVE | seu verbatim + validação |
+| `[MEMÓRIA-ORQ]` | Discussions #4 (Announcements) | LÊ via paste manual de @cnmfs (D10: MCP discussions ausente) | memória persistente do @orquestrador, longo prazo |
+| `[MANDATO] fase N` | Discussions #5 ou PR-comment do PR da fase (anunciado) | LÊ e executa | instruções autoritativas por fase |
+| `[COMS] fase N` | **PR-comments na branch de trabalho do PR da fase** | LÊ e ESCREVE via `add_issue_comment` (PR é issue na API) ou `add_comment_to_pending_review` | seu verbatim + validação do @orquestrador |
 
-Você escreve **só em `[COMS]`**.
+**Convenção em PR-comments:** toda mensagem começa com `@executor:` ou `@orquestrador:` no corpo, seguido do conteúdo. Mention do @claude[agent] direciona ao destinatário lógico mesmo quando identidade técnica é compartilhada (mesmo GitHub App).
+
+**Webhook subscribed:** ao criar comment, `subscribe_pr_activity` notifica automaticamente — handoff async sem paste manual.
+
+Você escreve **só em `[COMS]` (PR-comments do PR da fase corrente)**.
 
 ---
 
@@ -182,6 +186,7 @@ Cole os 5 outputs verbatim em `[COMS]`. **Canônico final = CI 3-matriz
 | Narrativa histórica das fases | `docs/WAL_HUMANO.md` |
 | Dívida técnica | `TECHNICAL_DEBT.md` |
 | Capacidades MCP esperadas + fallbacks | §3.5 (acima) |
+| Protocolo de comunicação atualizado | §3 (acima) — Discussions para memória, PR-comments para [COMS] |
 
 ## 11. Próximo gate
 
