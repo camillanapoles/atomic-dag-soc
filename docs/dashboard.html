@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>atomic-dag-soc — Sprint 2 Dashboard (closed)</title>
+<title>atomic-dag-soc — Catálogo (Sprint 2 + 2.H + 2.J closed)</title>
 <style>
   :root {
     --bg: #0f1115;
@@ -123,12 +123,13 @@
 </head>
 <body>
 
-<h1>atomic-dag-soc — Sprint 2 Dashboard (closed)</h1>
+<h1>atomic-dag-soc — Catálogo (Sprint 2 + 2.H + 2.J closed)</h1>
 <div class="meta">
   Branch <strong>main</strong> &middot;
-  HEAD <a href="https://github.com/camillanapoles/atomic-dag-soc/commit/da46621">da46621</a> (merge PR #1) &middot;
+  HEAD <a href="https://github.com/camillanapoles/atomic-dag-soc/commit/07118f6">07118f6</a> (merge PR #3 CLAUDE.md) &middot;
   Tag <a href="https://github.com/camillanapoles/atomic-dag-soc/releases/tag/v0.3.0-sprint2"><strong>v0.3.0-sprint2</strong></a> at <a href="https://github.com/camillanapoles/atomic-dag-soc/commit/d9a785b">d9a785b</a> &middot;
-  Sprint 2 <strong>closed</strong>, awaiting Sprint 3 (FM-10 / TD-003)
+  CLAUDE.md boot context ativo (Layer-1) &middot;
+  Sprint 2 + 2.H + 2.J <strong>closed</strong>, awaiting Sprint 3 (FM-10 / TD-003)
 </div>
 
 <h2>Roadmap Sprint 2 — fases 2.A → 2.H</h2>
@@ -178,6 +179,26 @@
   <div class="panel">
     <h2 style="margin-top: 0;">Timeline — 11 commits + merge (12 total)</h2>
     <ul class="timeline">
+      <li>
+        <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/07118f6">07118f6</a></span><span class="phase-tag">2.J MERGE</span></div>
+        <div class="when">2026-05-28 19:15 UTC</div>
+        <div class="what"><code style="font-family: var(--mono); font-size: 12px;">Merge pull request #3</code> from camillanapoles/claude/add-claude-md — docs: add CLAUDE.md boot context</div>
+      </li>
+      <li>
+        <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/2e06aaf">2e06aaf</a></span><span class="phase-tag">Phase 2.J</span></div>
+        <div class="when">2026-05-28 19:07 UTC</div>
+        <div class="what"><code style="font-family: var(--mono); font-size: 12px;">docs:</code> add CLAUDE.md — Layer-1 boot context for @executor (166 linhas, ~1.6K tokens)</div>
+      </li>
+      <li>
+        <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/45d2ede">45d2ede</a></span><span class="phase-tag">2.H MERGE</span></div>
+        <div class="when">2026-05-28 18:52 UTC</div>
+        <div class="what"><code style="font-family: var(--mono); font-size: 12px;">Merge pull request #2</code> from camillanapoles/claude/sync-sprint2-docs-2h — Phase 2.H sync</div>
+      </li>
+      <li>
+        <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/0a85ef4">0a85ef4</a></span><span class="phase-tag">Phase 2.H</span></div>
+        <div class="when">2026-05-28 03:14 UTC</div>
+        <div class="what"><code style="font-family: var(--mono); font-size: 12px;">docs(2.h):</code> sync STATUS + WAL_HUMANO + dashboard reflecting Sprint 2 closed</div>
+      </li>
       <li>
         <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/da46621">da46621</a></span><span class="phase-tag">2.G MERGE</span></div>
         <div class="when">2026-05-27 23:34 UTC</div>
@@ -312,6 +333,24 @@
       </div>
     </div>
     <div class="debt">
+      <div class="id">D9 — branch claude/add-claude-md remota não-deletada</div>
+      <div class="body">
+        Em Phase 2.J, <code style="font-family: var(--mono); font-size: 12px;">git push origin --delete claude/add-claude-md</code> retornou HTTP 403
+        via <code style="font-family: var(--mono); font-size: 12px;">local_proxy</code> (mesmo padrão D7). Branch remota persiste; PR mergeado.
+        Cosmética, não-bloqueante. Aberta.
+      </div>
+    </div>
+    <div class="debt">
+      <div class="id">D10 — MCP do @executor sem toolset discussions</div>
+      <div class="body">
+        Descoberto em Phase 2.I ATO 1: <code style="font-family: var(--mono); font-size: 12px;">github-mcp-server</code> do @executor está no toolset core
+        (52 tools, zero <code style="font-family: var(--mono); font-size: 12px;">discussion_*</code>). Ativação de <code style="font-family: var(--mono); font-size: 12px;">discussions</code> é config do harness
+        (<code style="font-family: var(--mono); font-size: 12px;">settings.json mcpServers</code> → endpoint <code style="font-family: var(--mono); font-size: 12px;">/mcp/x/all</code>),
+        fora do escopo runtime do @executor. CLAUDE.md §3.5 documenta servidor esperado + fallback paste manual via @cnmfs.
+        Cosmética operacional, não-bloqueante. Aberta.
+      </div>
+    </div>
+    <div class="debt">
       <div class="id">D8 — tag lightweight vs precedente annotated</div>
       <div class="body">
         Tag remota <code style="font-family: var(--mono); font-size: 12px;">v0.3.0-sprint2</code> é
@@ -386,7 +425,7 @@
 </div>
 
 <footer>
-  Gerado em 2026-05-17, atualizado em 2026-05-28 (Phase 2.H sync pós-merge). Dados embutidos no HTML; abre offline.
+  Gerado em 2026-05-17, atualizado em 2026-05-28 (Phase 2.I sync pós-CLAUDE.md). Dados embutidos no HTML; abre offline.
   Para regenerar, edite este arquivo manualmente até que exista <code style="font-family: var(--mono); font-size: 12px;">scripts/build_dashboard.py</code> (fora do escopo Sprint 2).
 </footer>
 

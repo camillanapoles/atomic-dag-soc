@@ -61,6 +61,36 @@ Você escreve **só em `[COMS]`**.
 
 ---
 
+## 3.5. Capacidades MCP — checar no boot, declarar gaps
+
+O `github-mcp-server` tem **toolsets modulares**: `repos`, `issues`, `pull_requests`, `actions`, `discussions`, etc. O endpoint default `api.githubcopilot.com/mcp` (alias `/mcp`) é **core** e **não inclui `discussions`**. O endpoint `/mcp/x/all` ativa todos os toolsets. A escolha é **config do harness (`settings.json` `mcpServers`)**, feita por @cnmfs — não trocável em runtime pelo agente.
+
+### Capacidades esperadas + fallback documentado
+
+| Toolset | Tools chave | Disponível no core? | Fallback se ausente |
+|---|---|---|---|
+| `pull_requests` | `pull_request_read`, `create_pull_request`, `merge_pull_request` | ✅ sim | — |
+| `repos` | `get_file_contents`, `list_commits`, `create_or_update_file`, `push_files` | ✅ sim | — |
+| `actions` | `list_workflow_runs`, `get_job_logs`, `actions_run_trigger` | ❌ não no core | `gh run list` / `gh run rerun` / `gh run view --log` |
+| `discussions` | `discussion_comment_write` (add/reply/update) | ❌ não no core | **paste manual via @cnmfs no chat claude.ai** |
+
+### Procedimento no boot
+
+1. Enumere as tools com prefixo `mcp__github__*`. Reporte quais toolsets você tem.
+2. Para cada toolset esperado mas ausente, declare em `[COMS]`:
+
+```
+@executor: toolset MCP <nome> ausente; usando fallback <descrição>. Não-bloqueante.
+```
+
+3. **Nunca invente capacidade.** Se uma tool que você "deveria ter" não aparece em `ToolSearch`, ela não existe nesta sessão (M2 — VVV=1.0).
+
+### Como expandir capacidades (responsabilidade @cnmfs)
+
+Se quiser que o @executor escreva direto em Discussions / consulte Actions sem fallback, @cnmfs reconfigura no `settings.json` do harness Claude Code apontando para `https://api.githubcopilot.com/mcp/x/all`. A próxima sessão herda os toolsets adicionais. **Não é decisão arquitetural; é config de ambiente.** Registrar como dívida operacional Dn se relevante.
+
+---
+
 ## 4. Fluxo canônico — seu lugar nele
 
 ```
@@ -151,6 +181,7 @@ Cole os 5 outputs verbatim em `[COMS]`. **Canônico final = CI 3-matriz
 | Decisões arquiteturais | `docs/architecture/adrs/ADR-001..006` |
 | Narrativa histórica das fases | `docs/WAL_HUMANO.md` |
 | Dívida técnica | `TECHNICAL_DEBT.md` |
+| Capacidades MCP esperadas + fallbacks | §3.5 (acima) |
 
 ## 11. Próximo gate
 
