@@ -7,7 +7,7 @@
 ## Branch corrente
 
 - **Nome:** `main` (Sprint 2 mergeada via PR #1; 2.H/2.I/2.J/2.K mergeadas via PRs #2/#7/#3/#8 respectivamente)
-- **HEAD:** `ecd86c2` (Sprint 3 em andamento: 3.A `486f766` + 3.B `ecd86c2` mergeadas; 3.C em PR — streaming.py + FM-10 closure + I8-ext autogate proibido)
+- **HEAD:** `83d9a17` (Sprint 3 em andamento: 3.A + 3.B + 3.C mergeadas; 3.D em PR — adversarial battery streaming SIGKILL×50 + concorrência + perf)
 - **Tag mais recente:** `v0.3.0-sprint2` em `d9a785b` (publicada via UI; lightweight no remoto vs annotated local — D8 cosmético)
 - **Commits ahead de main:** 0 (mergeada em main)
 - **Pages:** publicado em `https://camillanapoles.github.io/atomic-dag-soc/` (build automático via push to main em `/docs`); root redireciona para `/dashboard.html` desde 2.K (D11 fechada)
