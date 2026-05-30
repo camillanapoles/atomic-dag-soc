@@ -300,7 +300,7 @@
     <div class="expect"><span class="lbl">EXPECTATIVA AO FINAL</span>main com <code>streaming.py</code> implementado; par red→green de <code>test_fm10_regression</code> visível no histórico (prova Popperiana ativa); cov global ≥95%; CI 3-matriz verde; tag <code>v0.4.0-sprint3</code>; TD-003 → Resolved.</div>
     <div class="pmap"><span class="lbl">MAPA DE PRODUÇÃO (tasks 3.A → 3.G)</span>
       <ul>
-        <li class="todo"><span class="tk">3.A</span> ADR-007 (§0 nota terminológica + D1..D8 + critério Popperiano-mestre + alternativas DA-1/2/3)</li>
+        <li class="done"><span class="tk">3.A</span> ADR-007 (§0 nota terminológica + D1..D8 + critério Popperiano-mestre + alternativas DA-1/2/3)</li>
         <li class="todo"><span class="tk">3.B</span> docs/api/streaming.md (contrato tick_streaming + advance_cursor + StreamEvent + TickResult)</li>
         <li class="todo"><span class="tk">3.C.1</span> streaming.py skeleton + happy path — SEM acoplamento (gera SHA X-1)</li>
         <li class="todo"><span class="tk">3.C.2</span> advance_cursor implementado + acoplamento ativo (gera SHA X)</li>
@@ -446,7 +446,7 @@
     <div class="debt"><div class="id">D10 — MCP sem toolset discussions</div><div class="body">@executor no core toolset (52 tools, zero discussion_*). Fallback paste manual via @cnmfs documentado em CLAUDE.md §3.5. Aberta.</div></div>
     <div class="debt debt-closed"><div class="id">D11 — Pages root sem index.html</div><div class="body"><strong>Fechada em 2.K</strong>: docs/index.html meta-refresh redirect.</div></div>
     <div class="debt"><div class="id">D12 — proxy bloqueia *.github.io</div><div class="body">@executor não verifica Pages (host_not_allowed). Fallback: @orquestrador verifica via conector. Aberta.</div></div>
-    <div class="debt debt-closed"><div class="id">D13 — nota terminológica falsificável</div><div class="body"><strong>Fechada parcialmente em 2.L</strong>: CLAUDE.md §1 + README + DOC-SELF-001 +nota; reforço durável em ADR-007 §0 (Sprint 3).</div></div>
+    <div class="debt debt-closed"><div class="id">D13 — nota terminológica falsificável</div><div class="body"><strong>Fechada em 3.A</strong>: closure durável em ADR-007 §0 (autoridade); parcial inicial em 2.L (CLAUDE.md §1 + README + DOC-SELF-001).</div></div>
     <div class="debt debt-closed"><div class="id">A4 — README defasado</div><div class="body"><strong>Fechada em 2.L</strong>: README reescrito (Sprint 2.K / 9 módulos / 256 tests).</div></div>
     <div class="debt"><div class="id">TD-001 — writer 89-94</div><div class="body">Branch error-recovery sem teste. Reprogramado para Sprint 5. Cov 80% no módulo, 98.54% global. Aberta.</div></div>
     <div class="debt"><div class="id">TD-003 — FM-10</div><div class="body">tick_streaming não acopla advance_cursor. <strong>Alvo Sprint 3.</strong> RPN=162. Aberta.</div></div>
