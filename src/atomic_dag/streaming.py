@@ -56,28 +56,32 @@ def tick_streaming(project: Path, event: StreamEvent) -> TickResult:
     state = json.loads(state_path.read_text())
     current_cursor = state.get("cursor", "")
 
-    # 2. Validate cursor
+    # 2. Check idempotência via WAL (ADR-007 D3: idempotency BEFORE cursor check)
+    # Replay seguro: event_id no WAL + state.cursor == entry.cursor_to → idempotent.
+    if wal_path.exists():
+        for line in wal_path.read_text().splitlines():
+            try:
+                entry = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if (
+                entry.get("event_id") == event.event_id
+                and entry.get("cursor_to") == current_cursor
+            ):
+                return TickResult(
+                    event_id=event.event_id,
+                    advanced_cursor_from=current_cursor,
+                    advanced_cursor_to=current_cursor,
+                    wal_event_logged=False,
+                    idempotent_replay=True,
+                )
+
+    # 3. Validate cursor
     if event.expected_cursor_from != current_cursor:
         raise StreamCursorMismatchError(
             f"Expected cursor {event.expected_cursor_from!r}, "
             f"got {current_cursor!r}"
         )
-
-    # 3. Check idempotência via WAL
-    if wal_path.exists():
-        for line in wal_path.read_text().splitlines():
-            try:
-                entry = json.loads(line)
-                if entry.get("event_id") == event.event_id:
-                    return TickResult(
-                        event_id=event.event_id,
-                        advanced_cursor_from=current_cursor,
-                        advanced_cursor_to=current_cursor,
-                        wal_event_logged=False,
-                        idempotent_replay=True,
-                    )
-            except json.JSONDecodeError:
-                continue
 
     # 4. Compute new_cursor
     new_cursor = _next_cursor(current_cursor)
