@@ -98,6 +98,7 @@ Cursor de partida: `FROM 1d6217e` (HEAD main pós-2.K merge + 2.L expandida com 
 | **D12** | Phase 2.I (descoberta no ATO 4) | `local_proxy` do @executor filtra outbound para `*.github.io` (`x-deny-reason: host_not_allowed`); @executor não verifica Pages diretamente | aberta, cosmética operacional (config do harness, mesma classe que D7/D9/D10); fallback: @orquestrador verifica via conector |
 | **D13** | Phase 2.I (descoberta pós-2.K por releitura) | Termo "falsificável" usado em CLAUDE.md §1 e README sem nota terminológica Popperiana anexa; risco de má leitura indutora de erro em pontos de boot/entrada (humano externo ou LLM externo lendo o repo via clone/busca) | **fechada parcialmente em 2.L**: CLAUDE.md §1 +nota; README +nota; reforço durável em ADR-007 §0 (Sprint 3) |
 | **A4** | Phase 2.I (descoberta pós-2.K por releitura) | README.md em main defasado: "Sprint 1 in progress 3/4 modules / 135 tests" vs realidade `1d6217e` (Sprint 2.K closed / 9 / 256) | **fechada em 2.L**: README reescrito integralmente |
+| **I-DASH** | Phase 2.M | Toda fase que fecha DEVE bumpar `dashboard.html` + `STATUS.md` no mesmo PR; checkbox ☐→☑ do mapa de produção é parte do gate da fase; @orquestrador valida via conector. Automação N2 (`scripts/build_dashboard.py`) é entregável Sprint 4. | ativa |
 
 ## Catálogo de documentos
 
@@ -128,7 +129,7 @@ Cursor de partida: `FROM 1d6217e` (HEAD main pós-2.K merge + 2.L expandida com 
 | `PRE_EXECUCAO_PLANO_CONTINUIDADE_v2.md` | Checklist meta-gate pré-execução | vigente |
 | `PLANO_CONTINUIDADE_FRACTAL_v3.md` | (não-presente no repo) | **DEPRECADO referencialmente** — ADR-006 deprecia explicitamente este artefato carregando D3 inválido e nomenclatura `state.json` |
 | `STATUS.md` | Este arquivo: catálogo vivo | vigente |
-| `dashboard.html` | Painel estático offline com roadmap + timeline + dívidas | vigente |
+| `dashboard.html` | Painel estático offline — programa completo Sprint 0→6 (5W1H + expectativa + mapa de produção navegável por Sprint) + timeline + dívidas + invariante I-DASH | vigente |
 | `WAL_HUMANO.md` | WAL traduzido para narrativa humana (decisões + correções + lições) | vigente |
 | `DOC-SELF-001-atomic-dag-self.md` | Documentação auto-referente — Atomic-DAG explicado *como* um ATÔMICO do próprio Atomic-DAG (9 blocos Template Master, frontmatter válido, cursor I-WAL, ancorado em main@1d6217e); demonstra D4 por instanciação; ponte pedagógica para Sprint 6 / US-07 (meta-uso) — quando `.atomic-dag/state.json` gerenciar este arquivo como instância operacional | vigente, **artefato pedagógico** |
 
