@@ -142,7 +142,7 @@ Indicates cursor divergence — must not be silenced. Callers that catch this er
 
 ---
 
-## 8. `.atomic-dag/state.json` schema
+## 8. `state.json` schema
 
 Introduced in Sprint 3 as the operational cursor store:
 
@@ -152,6 +152,12 @@ Introduced in Sprint 3 as the operational cursor store:
   "updated_at": "<ISO-8601 UTC>"
 }
 ```
+
+> **Path:** `state.json` lives at the project root (`project / "state.json"`).
+> `.atomic-dag/` holds only `wal.jsonl`. (Errata 0.5a: §8 earlier said
+> `.atomic-dag/state.json`; §5/§10 are authoritative — root. `streaming.py`
+> implements root; this aligns §8 to §5/§10. Docs-only consistency fix, no
+> behavioural change.)
 
 This file is **purpose-narrow**: it stores only the streaming cursor pointer, not atom states (those remain in `.md` frontmatter). This is consistent with ADR-006's rejection of `state.json`-as-atom-state.
 
