@@ -96,7 +96,7 @@ Cursor de partida: `FROM 1d6217e` (HEAD main pós-2.K merge + 2.L expandida com 
 | **D10** | Phase 2.I (descoberta no ATO 1) | MCP `github-mcp-server` do @executor está no toolset core (52 tools, zero `discussion_*`); ativação de `discussions` é config do harness (`settings.json` `mcpServers` → endpoint `/mcp/x/all`), fora do escopo runtime do @executor. CLAUDE.md §3.5 documenta servidor esperado + fallback paste manual via @cnmfs. | aberta, cosmética operacional |
 | **D11** | Phase 2.I (descoberta pós-merge) | Pages habilitado (`Settings → Pages → Source: main /docs`); root URL `https://camillanapoles.github.io/atomic-dag-soc/` retornava 404 sem `index.html` em `/docs` | **fechada em 2.K**: `docs/index.html` criado com meta-refresh redirect para `dashboard.html` |
 | **D12** | Phase 2.I (descoberta no ATO 4) | `local_proxy` do @executor filtra outbound para `*.github.io` (`x-deny-reason: host_not_allowed`); @executor não verifica Pages diretamente | aberta, cosmética operacional (config do harness, mesma classe que D7/D9/D10); fallback: @orquestrador verifica via conector |
-| **D13** | Phase 2.I (descoberta pós-2.K por releitura) | Termo "falsificável" usado em CLAUDE.md §1 e README sem nota terminológica Popperiana anexa; risco de má leitura indutora de erro em pontos de boot/entrada (humano externo ou LLM externo lendo o repo via clone/busca) | **fechada parcialmente em 2.L**: CLAUDE.md §1 +nota; README +nota; reforço durável em ADR-007 §0 (Sprint 3) |
+| **D13** | Phase 2.I (descoberta pós-2.K por releitura) | Termo "falsificável" usado em CLAUDE.md §1 e README sem nota terminológica Popperiana anexa; risco de má leitura indutora de erro em pontos de boot/entrada (humano externo ou LLM externo lendo o repo via clone/busca) | **fechada em 3.A**: closure durável em ADR-007 §0 (autoridade); parcial inicial em 2.L (CLAUDE.md §1 + README + DOC-SELF-001) |
 | **A4** | Phase 2.I (descoberta pós-2.K por releitura) | README.md em main defasado: "Sprint 1 in progress 3/4 modules / 135 tests" vs realidade `1d6217e` (Sprint 2.K closed / 9 / 256) | **fechada em 2.L**: README reescrito integralmente |
 | **I-DASH** | Phase 2.M | Toda fase que fecha DEVE bumpar `dashboard.html` + `STATUS.md` no mesmo PR; checkbox ☐→☑ do mapa de produção é parte do gate da fase; @orquestrador valida via conector. Automação N2 (`scripts/build_dashboard.py`) é entregável Sprint 4. | ativa |
 
@@ -112,6 +112,7 @@ Cursor de partida: `FROM 1d6217e` (HEAD main pós-2.K merge + 2.L expandida com 
 | `ADR-004-atomic-writes.md` | `writer.py` tmp+fsync+rename (FM-02 fechado) | vigente |
 | `ADR-005-zenodo-timing-strategy.md` | Defer DOI público até Sprint 4 (Hello SOC + arXiv) | vigente |
 | `ADR-006-sprint-2-refactor-transitions.md` | Especificação completa do módulo `transitions`: D1, D2, D4-D8, D11, DA-1/2/3, D3 rejeitado | vigente, **autoridade** |
+| `ADR-007-sprint-3-fm10-streaming.md` | Especificação completa do módulo `streaming` (Sprint 3, FM-10 closure): §0 nota terminológica Popperiana (closure durável D13), D1-D8 (ordem operação, StreamEvent/TickResult, idempotência, WAL schema, exit codes, concorrência, regression invariant D7 = critério Popperiano-mestre, bateria adversarial), DA-1/2/3 resolvidos, 4 alternativas rejeitadas | vigente, **autoridade** |
 
 ### Especificações de API (`docs/api/`)
 
