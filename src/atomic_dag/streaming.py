@@ -1,7 +1,11 @@
 """Sprint 3 — FM-10 closure (TD-003).
 
-3.C.1: skeleton + happy path. SEM advance_cursor (gera SHA X-1 RED).
-3.C.2: adiciona advance_cursor (gera SHA X GREEN).
+tick_streaming compõe parser/gate/fsm primitives e garante chamada a
+advance_cursor antes do WAL log (D11: disk leads, WAL confirms).
+
+Critério Popperiano-mestre (ADR-007 D7): a regressão test_fm10_regression
+falsifica a afirmação "FM-10 está fechada" se advance_cursor for removido
+de tick_streaming. Par red→green: SHA X-1 (sem chamada) → SHA X (com chamada).
 
 Spec: docs/architecture/adrs/ADR-007-sprint-3-fm10-streaming.md
 API:  docs/api/streaming.md
@@ -42,11 +46,7 @@ class TickResult:
 def tick_streaming(project: Path, event: StreamEvent) -> TickResult:
     """Processa um evento de stream.
 
-    FM-10 BUG (3.C.1 deliberado): advance_cursor NÃO é chamado aqui.
-    Isso garante que test_fm10_regression falhe neste SHA (SHA X-1 RED).
-    O fix é adicionado em 3.C.2 (SHA X GREEN).
-
-    Post-condition (violada aqui, fixada em 3.C.2):
+    Post-condition (FM-10 fix, ADR-007 D7):
         state.cursor == result.advanced_cursor_to
     """
     state_path = project / "state.json"
@@ -82,10 +82,10 @@ def tick_streaming(project: Path, event: StreamEvent) -> TickResult:
     # 4. Compute new_cursor
     new_cursor = _next_cursor(current_cursor)
 
-    # 5. FM-10 BUG: advance_cursor NÃO chamado aqui (SHA X-1)
-    # Fix em 3.C.2: advance_cursor(state_path, new_cursor)
+    # 5. advance_cursor (FM-10 FIX — SHA X GREEN, ADR-007 D1 step 5)
+    advance_cursor(state_path, new_cursor)
 
-    # 6. WAL log (em 3.C.2 será APÓS advance_cursor — D11: disk leads, WAL confirms)
+    # 6. WAL log APÓS advance_cursor (D11: disk leads, WAL confirms)
     wal_entry = {
         "ts": event.ts,
         "tipo": "streaming_tick",
