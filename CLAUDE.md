@@ -12,7 +12,8 @@
 2. Ler o canal `[MANDATO]` nas Discussions → instrução corrente + comunicação completa.
 3. Ler `[MEMÓRIA-ORQ]` (Discussions) + `docs/STATUS.md` → estado vivo e cursor.
 4. Registrar o mandato corrente na **sua** memória (formato em §5).
-5. Aguardar `go <fase>` de @cnmfs. **Não inicie nada antes do `go`** (I8).
+5. Aguardar `go <fase>` de @cnmfs. **Não inicie nem avance nada antes do `go`
+   — nem com CI verde** (I8 + I8-ext). Após reportar verbatim, fique IDLE.
 
 ---
 
@@ -163,6 +164,7 @@ Cole os 5 outputs verbatim em `[COMS]`. **Canônico final = CI 3-matriz
 | I5 | Sem `git amend`; só fix-forward |
 | I6 | Cursor FROM/THIS/GOTO em todo commit (= M5) |
 | I8 | Não iniciar sem `go`; não encadear fases |
+| I8-ext | **Autogate PROIBIDO.** CI verde é pré-condição, NUNCA gatilho. Nenhuma fase inicia sem `go <fase>`; nenhum merge sem `go merge <fase>`. Após reportar verbatim → IDLE. "O gate abriu, vou avançar" é o pensamento banido. |
 | D2 | Dupla CI verde (push + PR) para o gate |
 | D11 | Disk never lags WAL (`write_atomic` antes de `log_event`) |
 
