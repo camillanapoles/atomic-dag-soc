@@ -143,9 +143,9 @@
 <h1>atomic-dag-soc — Programa completo (Sprint 0 → 6)</h1>
 <div class="meta">
   Branch <strong>main</strong> &middot;
-  HEAD <a href="https://github.com/camillanapoles/atomic-dag-soc/commit/1d6217e">1d6217e</a> (merge PR #8 — 2.K) &middot;
+  HEAD <a href="https://github.com/camillanapoles/atomic-dag-soc/commit/83d9a17">83d9a17</a> (merge PR #14 — 3.C) &middot;
   Tag <a href="https://github.com/camillanapoles/atomic-dag-soc/releases/tag/v0.3.0-sprint2"><strong>v0.3.0-sprint2</strong></a> at <a href="https://github.com/camillanapoles/atomic-dag-soc/commit/d9a785b">d9a785b</a> &middot;
-  Sprint 2 + 2.H/2.I/2.J/2.K/2.L <strong>closed</strong> &middot; Sprint 3 (FM-10) próximo
+  Sprint 3 (FM-10) <strong>em andamento</strong> &middot; 3.A + 3.B + 3.C mergeadas &middot; 3.D em PR
 </div>
 
 <p class="note">
@@ -304,7 +304,7 @@
         <li class="done"><span class="tk">3.B</span> docs/api/streaming.md (contrato tick_streaming + advance_cursor + StreamEvent + TickResult)</li>
         <li class="done"><span class="tk">3.C.1</span> streaming.py skeleton + happy path — SEM acoplamento (gera SHA X-1)</li>
         <li class="done"><span class="tk">3.C.2</span> advance_cursor implementado + acoplamento ativo (gera SHA X)</li>
-        <li class="todo"><span class="tk">3.D</span> test_fm10_regression red→green + adversariais (SIGKILL×50, idempotência, concorrência, perf p99&lt;100ms)</li>
+        <li class="done"><span class="tk">3.D</span> test_fm10_regression red→green + adversariais (SIGKILL×50, idempotência, concorrência, perf p99&lt;100ms)</li>
         <li class="todo"><span class="tk">3.E</span> CLI atomic-dag stream + exit codes 0/1/2</li>
         <li class="todo"><span class="tk">3.F</span> cov ≥95% + TD-003 → Resolved</li>
         <li class="todo"><span class="tk">3.G</span> merge --no-ff + tag v0.4.0-sprint3</li>
@@ -404,6 +404,11 @@
   <div class="panel">
     <h2 style="margin-top: 0;">Timeline recente — pós-Sprint-2</h2>
     <ul class="timeline">
+      <li>
+        <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/83d9a17">83d9a17</a></span><span class="phase-tag">3.C MERGE</span></div>
+        <div class="when">2026-05-30</div>
+        <div class="what"><code>Merge PR #14</code> — streaming.py + FM-10 closure (advance_cursor coupling) + I8-ext</div>
+      </li>
       <li>
         <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/1d6217e">1d6217e</a></span><span class="phase-tag">2.K MERGE</span></div>
         <div class="when">2026-05-29 19:02 UTC</div>
