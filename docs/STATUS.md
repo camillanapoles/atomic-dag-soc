@@ -119,6 +119,7 @@ Cursor de partida: `FROM 1d6217e` (HEAD main pós-2.K merge + 2.L expandida com 
 | Path | Descrição | Estado |
 |---|---|---|
 | `transitions.md` | Contrato observável de `execute_transition` + `TransitionResult` (Phase 2.B) | vigente |
+| `streaming.md` | Contrato observável de `tick_streaming` + `advance_cursor` + `StreamEvent` + `TickResult` + `StreamCursorMismatchError` + WAL schema `streaming_tick` + exit codes 0/1/2 (Phase 3.B) | vigente |
 
 ### Planejamento (`docs/`)
 
