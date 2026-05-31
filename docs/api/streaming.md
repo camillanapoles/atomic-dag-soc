@@ -80,13 +80,28 @@ This post-condition is the regression invariant. `tests/test_fm10_regression.py`
 6. `wal.log_event(project, {...})` — SINGLE event, AFTER `advance_cursor` (D11: disk leads, WAL confirms)
 7. Return `TickResult(idempotent_replay=False, wal_event_logged=True, ...)`
 
+### CLI invocation (Phase 3.E — DA-3: separate subcommand, not a flag)
+
+```
+atomic-dag --project PATH stream [--events-file FILE] [--json]
+```
+
+- Reads a sequence of `StreamEvent` as JSONL from `--events-file` or stdin.
+  Each line: `{"event_id","ts","payload","expected_cursor_from"}`.
+- Calls `tick_streaming(project, StreamEvent(**line))` for each event, in
+  order; stops at the first failure.
+- Text output: `stream evt-001: C-001 -> C-002` per event (or
+  ` (idempotent replay, no-op)` suffix), then
+  `processed N events, cursor now C-XXX`.
+- `--json`: `{"results": [TickResult...], "processed": N, "final_cursor": "..."}`.
+
 ### Exit codes (CLI — ADR-007 D5)
 
 | Code | Condition |
 |---|---|
-| `0` | tick processed successfully (including idempotent replay) |
-| `1` | business error: cursor mismatch (`StreamCursorMismatchError`), state invalid |
-| `2` | infrastructure error: I/O failure, permission denied |
+| `0` | all ticks processed successfully (including idempotent replay) |
+| `1` | business error: cursor mismatch (`StreamCursorMismatchError`) |
+| `2` | structural error: malformed JSONL, missing `state.json`, I/O failure |
 
 ### Error behavior
 

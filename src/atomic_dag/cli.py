@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import json as json_mod
 import sys
+from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 import click
@@ -19,6 +20,11 @@ from atomic_dag import __version__
 from atomic_dag.dag import compute_dag_levels, find_next_actionable, state_summary
 from atomic_dag.gate import validate_gate
 from atomic_dag.parser import AtomParseError, parse_atom_directory
+from atomic_dag.streaming import (
+    StreamCursorMismatchError,
+    StreamEvent,
+    tick_streaming,
+)
 from atomic_dag.transitions import (
     AtomNotFoundError,
     InvalidTransitionError,
@@ -200,6 +206,99 @@ def transition(
         click.echo(
             f"transition {atom_id} {action}: "
             f"{result.from_state} -> {result.to_state}{suffix}"
+        )
+
+
+@main.command()
+@click.option(
+    "--events-file",
+    type=click.Path(exists=True, dir_okay=False),
+    default=None,
+    help="JSONL file with stream events. Default: stdin.",
+)
+@click.option("--json", "as_json", is_flag=True, help="Output as JSON.")
+@click.pass_context
+def stream(ctx: click.Context, events_file: str | None, as_json: bool) -> None:
+    """Process a sequence of stream events (JSONL), advancing the cursor.
+
+    Each line is a StreamEvent:
+    {"event_id","ts","payload","expected_cursor_from"}.
+    Reads from --events-file or stdin (DA-3: separate subcommand, not a flag).
+
+    Exit codes (api/streaming.md §4 / ADR-007 D5):
+      0 — all events processed (including idempotent replay)
+      1 — cursor mismatch (StreamCursorMismatchError) — operational
+      2 — structural (malformed JSONL, missing state.json, I/O)
+    """
+    project = Path(ctx.obj["project"])
+
+    if events_file is not None:
+        raw = Path(events_file).read_text(encoding="utf-8")
+    else:
+        raw = sys.stdin.read()
+
+    lines = [ln for ln in raw.splitlines() if ln.strip()]
+    results: list[dict[str, Any]] = []
+    final_cursor = ""
+
+    for ln in lines:
+        try:
+            data = json_mod.loads(ln)
+            event = StreamEvent(
+                event_id=data["event_id"],
+                ts=data["ts"],
+                payload=data.get("payload", {}),
+                expected_cursor_from=data["expected_cursor_from"],
+            )
+        except (json_mod.JSONDecodeError, KeyError, TypeError) as exc:
+            click.echo(f"Error: malformed event line: {exc}", err=True)
+            sys.exit(2)
+
+        try:
+            result = tick_streaming(project, event)
+        except StreamCursorMismatchError as exc:
+            click.echo(f"Error: {exc}", err=True)
+            sys.exit(1)
+        except (FileNotFoundError, OSError) as exc:
+            click.echo(f"Error: {exc}", err=True)
+            sys.exit(2)
+
+        final_cursor = result.advanced_cursor_to
+        results.append(
+            {
+                "event_id": result.event_id,
+                "advanced_cursor_from": result.advanced_cursor_from,
+                "advanced_cursor_to": result.advanced_cursor_to,
+                "wal_event_logged": result.wal_event_logged,
+                "idempotent_replay": result.idempotent_replay,
+            }
+        )
+        if not as_json:
+            suffix = (
+                " (idempotent replay, no-op)"
+                if result.idempotent_replay
+                else ""
+            )
+            click.echo(
+                f"stream {result.event_id}: "
+                f"{result.advanced_cursor_from} -> "
+                f"{result.advanced_cursor_to}{suffix}"
+            )
+
+    if as_json:
+        click.echo(
+            json_mod.dumps(
+                {
+                    "results": results,
+                    "processed": len(results),
+                    "final_cursor": final_cursor,
+                },
+                indent=2,
+            )
+        )
+    else:
+        click.echo(
+            f"processed {len(results)} events, cursor now {final_cursor}"
         )
 
 
