@@ -7,7 +7,7 @@
 ## Branch corrente
 
 - **Nome:** `main` (Sprint 2 mergeada via PR #1; 2.H/2.I/2.J/2.K mergeadas via PRs #2/#7/#3/#8 respectivamente)
-- **HEAD:** `d5bdf2d` (Sprint 3 em andamento: 3.A + 3.B + 3.C + 3.D mergeadas; 3.E em PR — CLI `atomic-dag stream` subcommand + exit codes 0/1/2)
+- **HEAD:** `2a1f8b2` (Sprint 3 em andamento: 3.A→3.E mergeadas; 3.F em PR — TD-003 Resolved / cobertura final)
 - **Tag mais recente:** `v0.3.0-sprint2` em `d9a785b` (publicada via UI; lightweight no remoto vs annotated local — D8 cosmético)
 - **Commits ahead de main:** 0 (mergeada em main)
 - **Pages:** publicado em `https://camillanapoles.github.io/atomic-dag-soc/` (build automático via push to main em `/docs`); root redireciona para `/dashboard.html` desde 2.K (D11 fechada)
@@ -16,6 +16,9 @@
 
 | SHA | Fase | Quando | Mensagem |
 |---|---|---|---|
+| [`2a1f8b2`](https://github.com/camillanapoles/atomic-dag-soc/commit/2a1f8b2) | **3.E MERGE** | 2026-05-31 | `Merge PR #16 — feat(3.e): CLI atomic-dag stream + exit codes 0/1/2` |
+| [`d5bdf2d`](https://github.com/camillanapoles/atomic-dag-soc/commit/d5bdf2d) | **3.D MERGE** | 2026-05-30 | `Merge PR #15 — test(3.d): adversarial battery streaming (SIGKILL×50 α.3)` |
+| [`83d9a17`](https://github.com/camillanapoles/atomic-dag-soc/commit/83d9a17) | **3.C MERGE** | 2026-05-30 | `Merge PR #14 — feat(3.c): streaming.py + FM-10 closure + I8-ext` |
 | [`1d6217e`](https://github.com/camillanapoles/atomic-dag-soc/commit/1d6217e) | **2.K MERGE** | 2026-05-29 19:02Z | `Merge pull request #8 from camillanapoles/claude/sync-2k-pages-protocol` |
 | [`1de7072`](https://github.com/camillanapoles/atomic-dag-soc/commit/1de7072) | **2.K** | 2026-05-29 13:32Z | `docs(2.k): Pages root redirect + protocolo PR-comments oficial` |
 | [`39d020c`](https://github.com/camillanapoles/atomic-dag-soc/commit/39d020c) | **2.I MERGE** | 2026-05-29 03:54Z | `Merge pull request #7 from camillanapoles/claude/sync-status-2i` |
@@ -65,16 +68,16 @@ Autoria uniforme: `Camilla Napoles <cnmfs@cesar.school>`.
 
 ## Próximo gate — Sprint 3 (FM-10 / TD-003)
 
-Sprint 2 fechada em `da46621` (merge PR #1). Próxima sprint endereça **FM-10
-closure** — `tick_streaming` não chama `advance_cursor`, RPN=162 (highest open
-no FMEA SOC V4). TD-003 registrado para fechamento em Sprint 3 desde Sprint 0.
+**Sprint 3 quase fechada.** 3.A→3.F mergeadas/em-PR. Falta 3.G (merge final +
+tag `v0.4.0-sprint3`). FM-10 (TD-003) **RESOLVIDA** com prova adversarial em CI.
+Cobertura global 98.78%, 337 testes.
 
 Pré-condição descoberta na derivada de caminho pós-Sprint-2: o port de
 `tick_streaming`/`advance_cursor` planejado originalmente para Sprint 1 não
-ocorreu. Sprint 3 portará primeiro, depois implementará o fix, depois o
-regression test red→green.
+ocorreu. Sprint 3 portou primeiro, depois implementou o fix, depois o
+regression test red→green — par observável `1049649`→`64c3f5e`.
 
-Fases planejadas (espelham Sprint 2): 3.A ADR-007 → 3.B api/streaming.md →
+Fases (espelham Sprint 2): 3.A ADR-007 → 3.B api/streaming.md →
 3.C.1/3.C.2 implementação → 3.D adversarial battery → 3.E CLI wire → 3.F cov +
 TD-003 Resolved → 3.G merge --no-ff + tag v0.4.0-sprint3.
 
@@ -99,6 +102,7 @@ Cursor de partida: `FROM 1d6217e` (HEAD main pós-2.K merge + 2.L expandida com 
 | **D13** | Phase 2.I (descoberta pós-2.K por releitura) | Termo "falsificável" usado em CLAUDE.md §1 e README sem nota terminológica Popperiana anexa; risco de má leitura indutora de erro em pontos de boot/entrada (humano externo ou LLM externo lendo o repo via clone/busca) | **fechada em 3.A**: closure durável em ADR-007 §0 (autoridade); parcial inicial em 2.L (CLAUDE.md §1 + README + DOC-SELF-001) |
 | **A4** | Phase 2.I (descoberta pós-2.K por releitura) | README.md em main defasado: "Sprint 1 in progress 3/4 modules / 135 tests" vs realidade `1d6217e` (Sprint 2.K closed / 9 / 256) | **fechada em 2.L**: README reescrito integralmente |
 | **I-DASH** | Phase 2.M | Toda fase que fecha DEVE bumpar `dashboard.html` + `STATUS.md` no mesmo PR; checkbox ☐→☑ do mapa de produção é parte do gate da fase; @orquestrador valida via conector. Automação N2 (`scripts/build_dashboard.py`) é entregável Sprint 4. | ativa |
+| **TD-003** | Sprint 0 | FM-10: `tick_streaming` não acopla `advance_cursor` (RPN=162) | **RESOLVIDA em 3.C+3.D**: streaming.py + advance_cursor coupling (par red→green `1049649`→`64c3f5e`); test_fm10_regression (comportamental+estrutural) + bateria adversarial (SIGKILL×50 α.3, 50/50 in_critical_window). Movida para Resolved no TECHNICAL_DEBT.md em 3.F. |
 
 ## Catálogo de documentos
 
@@ -161,7 +165,7 @@ Cursor de partida: `FROM 1d6217e` (HEAD main pós-2.K merge + 2.L expandida com 
 |---|---|---|
 | `CLAUDE.md` | Layer-1 system instructions lido pelo Claude Code no boot de toda sessão; nicknames + canais Discussions + fluxo + mandatos M1-M5 + invariantes + capacidades MCP (§3.5) + mapa de fontes (166→~210 linhas após §3.5) | vigente, **boot context** |
 | `README.md` | README do projeto | vigente |
-| `TECHNICAL_DEBT.md` | Registro de dívidas técnicas (TD-001 writer 89-94; TD-002 stubs; TD-003 FM-10 deferido Sprint 3) | vigente |
+| `TECHNICAL_DEBT.md` | Registro de dívidas técnicas (TD-001 writer 89-94 ativa; TD-002 stubs resolved; TD-003 FM-10 **resolved 3.C+3.D**; TD-004 FM-01 mitigada) | vigente |
 | `pyproject.toml` | Config Python: deps, pytest, ruff, mypy, coverage (omit=[]) | vigente |
 | `.github/workflows/ci.yml` | CI: ruff + mypy strict + pytest, matriz 3.11/3.12/3.13 (ver Dívidas D1, D2) | vigente |
 

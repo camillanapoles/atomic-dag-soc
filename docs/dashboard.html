@@ -143,9 +143,9 @@
 <h1>atomic-dag-soc — Programa completo (Sprint 0 → 6)</h1>
 <div class="meta">
   Branch <strong>main</strong> &middot;
-  HEAD <a href="https://github.com/camillanapoles/atomic-dag-soc/commit/d5bdf2d">d5bdf2d</a> (merge PR #15 — 3.D) &middot;
+  HEAD <a href="https://github.com/camillanapoles/atomic-dag-soc/commit/2a1f8b2">2a1f8b2</a> (merge PR #16 — 3.E) &middot;
   Tag <a href="https://github.com/camillanapoles/atomic-dag-soc/releases/tag/v0.3.0-sprint2"><strong>v0.3.0-sprint2</strong></a> at <a href="https://github.com/camillanapoles/atomic-dag-soc/commit/d9a785b">d9a785b</a> &middot;
-  Sprint 3 (FM-10) <strong>em andamento</strong> &middot; 3.A→3.D mergeadas &middot; 3.E em PR
+  Sprint 3 (FM-10) <strong>em andamento</strong> &middot; 3.A→3.E mergeadas &middot; 3.F em PR
 </div>
 
 <p class="note">
@@ -306,7 +306,7 @@
         <li class="done"><span class="tk">3.C.2</span> advance_cursor implementado + acoplamento ativo (gera SHA X)</li>
         <li class="done"><span class="tk">3.D</span> test_fm10_regression red→green + adversariais (SIGKILL×50, idempotência, concorrência, perf p99&lt;100ms)</li>
         <li class="done"><span class="tk">3.E</span> CLI atomic-dag stream + exit codes 0/1/2</li>
-        <li class="todo"><span class="tk">3.F</span> cov ≥95% + TD-003 → Resolved</li>
+        <li class="done"><span class="tk">3.F</span> cov ≥95% + TD-003 → Resolved</li>
         <li class="todo"><span class="tk">3.G</span> merge --no-ff + tag v0.4.0-sprint3</li>
       </ul>
       <div class="us">user stories cobertas: US-01 (continuidade pós-crash) · US-02 (anti-regressão FM-10) · US-03 (CLI stream)</div>
@@ -405,6 +405,11 @@
     <h2 style="margin-top: 0;">Timeline recente — pós-Sprint-2</h2>
     <ul class="timeline">
       <li>
+        <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/2a1f8b2">2a1f8b2</a></span><span class="phase-tag">3.E MERGE</span></div>
+        <div class="when">2026-05-31</div>
+        <div class="what"><code>Merge PR #16</code> — CLI <code>atomic-dag stream</code> subcommand + exit codes 0/1/2</div>
+      </li>
+      <li>
         <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/d5bdf2d">d5bdf2d</a></span><span class="phase-tag">3.D MERGE</span></div>
         <div class="when">2026-05-30</div>
         <div class="what"><code>Merge PR #15</code> — adversarial battery streaming (SIGKILL×50 α.3, concorrência, perf p99&lt;100ms)</div>
@@ -459,13 +464,13 @@
     <div class="debt debt-closed"><div class="id">D13 — nota terminológica falsificável</div><div class="body"><strong>Fechada em 3.A</strong>: closure durável em ADR-007 §0 (autoridade); parcial inicial em 2.L (CLAUDE.md §1 + README + DOC-SELF-001).</div></div>
     <div class="debt debt-closed"><div class="id">A4 — README defasado</div><div class="body"><strong>Fechada em 2.L</strong>: README reescrito (Sprint 2.K / 9 módulos / 256 tests).</div></div>
     <div class="debt"><div class="id">TD-001 — writer 89-94</div><div class="body">Branch error-recovery sem teste. Reprogramado para Sprint 5. Cov 80% no módulo, 98.54% global. Aberta.</div></div>
-    <div class="debt"><div class="id">TD-003 — FM-10</div><div class="body">tick_streaming não acopla advance_cursor. <strong>Alvo Sprint 3.</strong> RPN=162. Aberta.</div></div>
+    <div class="debt debt-closed"><div class="id">TD-003 — FM-10</div><div class="body"><strong>Fechada em 3.C+3.D</strong>: streaming.py + advance_cursor coupling (par red→green 1049649→64c3f5e); test_fm10_regression + bateria adversarial (SIGKILL×50 α.3, 50/50 in_critical_window). RPN=162 neutralizado.</div></div>
     <div class="debt"><div class="id">TD-004 — FM-01 mitigated</div><div class="body">Escritores concorrentes; mitigado por O_APPEND + payload &lt; PIPE_BUF. Closure Sprint 5 (locks per-átomo). Aberta.</div></div>
   </div>
 </div>
 
 <footer>
-  Gerado em 2026-05-17, atualizado em 2026-05-29 (Phase 2.M — programa completo Sprint 0→6 + 5W1H + mapa de produção + invariante I-DASH). Dados embutidos no HTML; abre offline.
+  Gerado em 2026-05-17, atualizado em 2026-05-31 (Phase 3.F — TD-003 / FM-10 Resolved; cobertura final 98.78%, 337 testes). Dados embutidos no HTML; abre offline.
   Atualização do status é obrigatória por invariante I-DASH até existir <code>scripts/build_dashboard.py</code> (entregável Sprint 4, nível N2).
 </footer>
 
