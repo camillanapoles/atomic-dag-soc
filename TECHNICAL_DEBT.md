@@ -13,14 +13,6 @@ This file tracks known debts in the codebase. Each entry is a fact, not an aspir
 **Plan (atualizado 2026-05-28):** previsão original Sprint 1 NÃO executada; reprogramado para Sprint 5 junto com `reconcile` command. `writer.py` FM-02 já fechado por `write_atomic` (ADR-004); a dívida residual é apenas o branch error-recovery (89-94) que precisa de mock de OSError. Cov 80% mantida; agregado ponderado puxa 98.54%, não bloqueia M3 (≥95% global).
 **Owner:** Sprint 5 lead.
 
-### TD-003: No FMEA regression test for FM-10 yet
-
-**Created:** 2026-04-20 (Sprint 0)  
-**Description:** FM-10 (`tick_streaming` not calling `advance_cursor`, RPN=162) is the highest-RPN open item from the SOC V4 FMEA. We have not yet written the regression test that would fail without the fix and pass with it.  
-**Why deferred:** The `tick_streaming` and `advance_cursor` functions are part of the orchestrator that will be ported in Sprint 1. The regression test must follow the port.  
-**Plan:** Sprint 3 (according to PLANO_EXECUCAO_ENGENHARIA.md §6.4) — port the orchestrator code, write `tests/test_fm10_regression.py`, fix the coupling, verify the test goes from red to green.  
-**Owner:** Sprint 3 lead.
-
 ### TD-004: FM-01 — concurrent WAL writers (mitigated, not closed)
 
 **Status:** mitigated  
@@ -50,6 +42,27 @@ Sprint 2 (`transitions.md §8`).
 - `cli.py` — Sprint 2.E `df90620` (wire `transition` command + `--json` + exit codes)
 
 Nenhum permanece em `[tool.coverage.run] omit` no `pyproject.toml`. Coverage global 98.54% em main `07118f6`, com `cli.py` 100%, `transitions.py` 100%, `parser.py` 99%, `writer.py` 80% (TD-001 residual). Suite 256/256 verde.
+
+### TD-003 (Resolved 2026-05-31): FMEA regression test for FM-10 — coupling fixed and proven
+
+**Created:** 2026-04-20 (Sprint 0)
+**Resolved:** 2026-05-31 (Sprint 3 — fases 3.C + 3.D)
+**Module:** `src/atomic_dag/streaming.py`, `tests/test_fm10_regression.py`
+**Resolution:** FM-10 (RPN=162, highest-RPN open item do FMEA SOC V4) fechado:
+- **Port + fix (3.C, PR #14):** `streaming.py` implementado; `tick_streaming`
+  invoca `advance_cursor` (passo 5, ordem ADR-007 D1). Par Popperiano red→green
+  observável no histórico: `1049649` (sem coupling, regressão RED local) →
+  `64c3f5e` (coupling ativo, GREEN).
+- **Regression test (3.C):** `tests/test_fm10_regression.py` — dois mecanismos
+  complementares: comportamental (cursor avança no disco após tick) + estrutural
+  (spy confirma `advance_cursor` invocado). Roda em todo push (CI 3-matriz).
+- **Prova adversarial (3.D, PR #15):** `test_streaming_sigkill.py` α.3
+  determinístico — 50/50 SIGKILL na janela crítica `advance_cursor`→`log_event`,
+  zero violações WAL-ahead-of-disk (D7/D11). Perf p99 2.72ms. Concorrência
+  4-proc D7-consistente.
+**Critério Popperiano-mestre satisfeito:** a afirmação "FM-10 fechada" é
+falsificável e ativamente testada — qualquer refactor que desacople
+`tick_streaming` de `advance_cursor` falha o CI antes de chegar a `main`.
 
 
 ## Conventions
