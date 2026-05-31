@@ -3,6 +3,11 @@
 **Status:** Accepted  
 **Date:** 2026-05-12  
 **Deciders:** atomic-dag contributors
+**Superseded by:** ADR-008 (2026-05-31) — partially. ADR-008 retains this ADR's
+"Zenodo requires public repo" mechanism but relocates the public reveal + arXiv
+to Sprint 7 and defers DOI minting to Sprint 8 (ordering by permanence +
+optimization-before-publication). The Decision items 1-5 below reflect the
+original Sprint-4 timing and are HISTORICAL; see ADR-008 for the vigent plan.
 
 ## Context
 
