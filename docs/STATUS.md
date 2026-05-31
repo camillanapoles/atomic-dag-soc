@@ -7,8 +7,8 @@
 ## Branch corrente
 
 - **Nome:** `main` (Sprint 2 mergeada via PR #1; 2.H/2.I/2.J/2.K mergeadas via PRs #2/#7/#3/#8 respectivamente)
-- **HEAD:** `2a1f8b2` (Sprint 3 em andamento: 3.A→3.E mergeadas; 3.F em PR — TD-003 Resolved / cobertura final)
-- **Tag mais recente:** `v0.3.0-sprint2` em `d9a785b` (publicada via UI; lightweight no remoto vs annotated local — D8 cosmético)
+- **HEAD:** `c324e58` (Sprint 3 **FECHADO**: 3.A→3.F mergeadas; 3.G em PR — WAL humano + tag annotated `v0.4.0-sprint3`)
+- **Tag mais recente:** `v0.4.0-sprint3` (annotated, lição D8) — Sprint 3 close; precedente `v0.3.0-sprint2` em `d9a785b`
 - **Commits ahead de main:** 0 (mergeada em main)
 - **Pages:** publicado em `https://camillanapoles.github.io/atomic-dag-soc/` (build automático via push to main em `/docs`); root redireciona para `/dashboard.html` desde 2.K (D11 fechada)
 
@@ -16,6 +16,7 @@
 
 | SHA | Fase | Quando | Mensagem |
 |---|---|---|---|
+| [`c324e58`](https://github.com/camillanapoles/atomic-dag-soc/commit/c324e58) | **3.F MERGE** | 2026-05-31 | `Merge PR #17 — docs(3.f): TD-003 Resolved + cobertura final` |
 | [`2a1f8b2`](https://github.com/camillanapoles/atomic-dag-soc/commit/2a1f8b2) | **3.E MERGE** | 2026-05-31 | `Merge PR #16 — feat(3.e): CLI atomic-dag stream + exit codes 0/1/2` |
 | [`d5bdf2d`](https://github.com/camillanapoles/atomic-dag-soc/commit/d5bdf2d) | **3.D MERGE** | 2026-05-30 | `Merge PR #15 — test(3.d): adversarial battery streaming (SIGKILL×50 α.3)` |
 | [`83d9a17`](https://github.com/camillanapoles/atomic-dag-soc/commit/83d9a17) | **3.C MERGE** | 2026-05-30 | `Merge PR #14 — feat(3.c): streaming.py + FM-10 closure + I8-ext` |
@@ -66,20 +67,26 @@ Autoria uniforme: `Camilla Napoles <cnmfs@cesar.school>`.
 | 2.I — sync catalog + §3.5 MCP | `39d020c` | HEAD bump da46621→07118f6; CLAUDE.md em catálogo; TD-002 Resolved; §3.5 documenta toolsets MCP + fallbacks; D9+D10 registradas; CI 6/6 verde D2 sem flake | ✅ verde |
 | 2.K — Pages root redirect + protocolo PR-comments oficial | `1d6217e` | docs/index.html meta-refresh; CLAUDE.md §3 fluxo híbrido Discussions+PR-comments oficial; D11 fechada; D12 registrada (proxy executor); CI 6/6 verde D2 sem flake | ✅ verde |
 
-## Próximo gate — Sprint 3 (FM-10 / TD-003)
+## Sprint 3 — FECHADO
 
-**Sprint 3 quase fechada.** 3.A→3.F mergeadas/em-PR. Falta 3.G (merge final +
-tag `v0.4.0-sprint3`). FM-10 (TD-003) **RESOLVIDA** com prova adversarial em CI.
-Cobertura global 98.78%, 337 testes.
+**Sprint 3 fechado em 3.G**, tag annotated `v0.4.0-sprint3`. FM-10 (RPN=162,
+TD-003) **NEUTRALIZADO** com prova adversarial em CI: par Popperiano red→green
+`1049649`→`64c3f5e` + SIGKILL×50 α.3 (50/50 in_critical_window) + perf p99
+2.72ms + concorrência 4-proc D7-consistente.
 
-Pré-condição descoberta na derivada de caminho pós-Sprint-2: o port de
-`tick_streaming`/`advance_cursor` planejado originalmente para Sprint 1 não
-ocorreu. Sprint 3 portou primeiro, depois implementou o fix, depois o
-regression test red→green — par observável `1049649`→`64c3f5e`.
+Cobertura global 98.78%, suite 337 testes. Todas 7 fases (3.A-3.G) mergeadas
+via PRs #11-#17, CI 3-matriz verde em cada (D2). Narrativa completa do sprint
+em `docs/WAL_HUMANO_SPRINT3.md`.
 
-Fases (espelham Sprint 2): 3.A ADR-007 → 3.B api/streaming.md →
-3.C.1/3.C.2 implementação → 3.D adversarial battery → 3.E CLI wire → 3.F cov +
-TD-003 Resolved → 3.G merge --no-ff + tag v0.4.0-sprint3.
+## Próximo gate — Sprint 4 (Hello SOC + arXiv + DOI)
+
+Sprint 3 fechou o último high-RPN do FMEA antes do MVP. Próxima sprint sai
+da arquitetura interna para entrega externa: workflow "Hello SOC" demonstrativo
+end-to-end, submissão arXiv (manuscrito RSL_V2 em PQMS 9.68), DOI Zenodo,
+`scripts/build_dashboard.py` (gerador automático deste painel — N2). Detalhes
+em `docs/PLANO_ENGENHARIA_SOFTWARE_V1.md` e card Sprint 4 do dashboard.
+
+Cursor de partida Sprint 4: `FROM <SHA do merge 3.G>` (a confirmar pós-merge).
 
 Cursor de partida: `FROM 1d6217e` (HEAD main pós-2.K merge + 2.L expandida com DOC-SELF-001 / README sync / CLAUDE.md §1 nota terminológica).
 
@@ -136,7 +143,8 @@ Cursor de partida: `FROM 1d6217e` (HEAD main pós-2.K merge + 2.L expandida com 
 | `PLANO_CONTINUIDADE_FRACTAL_v3.md` | (não-presente no repo) | **DEPRECADO referencialmente** — ADR-006 deprecia explicitamente este artefato carregando D3 inválido e nomenclatura `state.json` |
 | `STATUS.md` | Este arquivo: catálogo vivo | vigente |
 | `dashboard.html` | Painel estático offline — programa completo Sprint 0→6 (5W1H + expectativa + mapa de produção navegável por Sprint) + timeline + dívidas + invariante I-DASH | vigente |
-| `WAL_HUMANO.md` | WAL traduzido para narrativa humana (decisões + correções + lições) | vigente |
+| `WAL_HUMANO.md` | WAL traduzido para narrativa humana — Sprint 2 (decisões + correções + lições) | vigente |
+| `WAL_HUMANO_SPRINT3.md` | WAL humano do Sprint 3 — fases 3.A-3.G, incidente autogate (I8-ext), furo D7 (L-orq-14), FM-10 closure, prova adversarial, honestidade do executor | vigente |
 | `DOC-SELF-001-atomic-dag-self.md` | Documentação auto-referente — Atomic-DAG explicado *como* um ATÔMICO do próprio Atomic-DAG (9 blocos Template Master, frontmatter válido, cursor I-WAL, ancorado em main@1d6217e); demonstra D4 por instanciação; ponte pedagógica para Sprint 6 / US-07 (meta-uso) — quando `.atomic-dag/state.json` gerenciar este arquivo como instância operacional | vigente, **artefato pedagógico** |
 
 ### Knowledge base (`knowledge/`)

@@ -143,9 +143,9 @@
 <h1>atomic-dag-soc — Programa completo (Sprint 0 → 6)</h1>
 <div class="meta">
   Branch <strong>main</strong> &middot;
-  HEAD <a href="https://github.com/camillanapoles/atomic-dag-soc/commit/2a1f8b2">2a1f8b2</a> (merge PR #16 — 3.E) &middot;
-  Tag <a href="https://github.com/camillanapoles/atomic-dag-soc/releases/tag/v0.3.0-sprint2"><strong>v0.3.0-sprint2</strong></a> at <a href="https://github.com/camillanapoles/atomic-dag-soc/commit/d9a785b">d9a785b</a> &middot;
-  Sprint 3 (FM-10) <strong>em andamento</strong> &middot; 3.A→3.E mergeadas &middot; 3.F em PR
+  HEAD <a href="https://github.com/camillanapoles/atomic-dag-soc/commit/c324e58">c324e58</a> (merge PR #17 — 3.F) &middot;
+  Tag <strong>v0.4.0-sprint3</strong> (annotated, lição D8) &middot;
+  Sprint 3 (FM-10) <strong>FECHADO</strong> &middot; 3.A→3.F mergeadas &middot; 3.G em PR (fechamento)
 </div>
 
 <p class="note">
@@ -188,8 +188,8 @@
     <div class="phase done"><div><div class="id">S0</div><div class="label">Bootstrap + atomic write</div></div><div class="status-dot"></div></div>
     <div class="phase done"><div><div class="id">S1</div><div class="label">FSM core</div></div><div class="status-dot"></div></div>
     <div class="phase done"><div><div class="id">S2</div><div class="label">Transitions + CLI</div></div><div class="status-dot"></div></div>
-    <div class="phase current"><div><div class="id">S3</div><div class="label">FM-10 closure</div></div><div class="status-dot"></div></div>
-    <div class="phase pending"><div><div class="id">S4</div><div class="label">Hello SOC + arXiv</div></div><div class="status-dot"></div></div>
+    <div class="phase done"><div><div class="id">S3</div><div class="label">FM-10 closure</div></div><div class="status-dot"></div></div>
+    <div class="phase current"><div><div class="id">S4</div><div class="label">Hello SOC + arXiv</div></div><div class="status-dot"></div></div>
     <div class="phase pending"><div><div class="id">S5</div><div class="label">Reconcile + writer fix</div></div><div class="status-dot"></div></div>
     <div class="phase pending"><div><div class="id">S6</div><div class="label">Validação externa</div></div><div class="status-dot"></div></div>
   </div>
@@ -285,8 +285,8 @@
   </div>
 </details>
 
-<details class="sprint" open>
-  <summary><span class="sid">Sprint 3</span> <span class="stitle">FM-10 closure</span> <span class="badge current">CURRENT · v0.4.0-sprint3 (alvo)</span></summary>
+<details class="sprint">
+  <summary><span class="sid">Sprint 3</span> <span class="stitle">FM-10 closure</span> <span class="badge done">DONE · v0.4.0-sprint3</span></summary>
   <div class="sprint-body">
     <dl class="w5h1">
       <dt>WHAT</dt><dd>Portar <code>streaming.py</code> e acoplar <code>tick_streaming → advance_cursor</code>; provar o acoplamento com regression test red→green commitado em main.</dd>
@@ -307,15 +307,15 @@
         <li class="done"><span class="tk">3.D</span> test_fm10_regression red→green + adversariais (SIGKILL×50, idempotência, concorrência, perf p99&lt;100ms)</li>
         <li class="done"><span class="tk">3.E</span> CLI atomic-dag stream + exit codes 0/1/2</li>
         <li class="done"><span class="tk">3.F</span> cov ≥95% + TD-003 → Resolved</li>
-        <li class="todo"><span class="tk">3.G</span> merge --no-ff + tag v0.4.0-sprint3</li>
+        <li class="done"><span class="tk">3.G</span> fechamento Sprint 3 (WAL humano + tag annotated v0.4.0-sprint3)</li>
       </ul>
       <div class="us">user stories cobertas: US-01 (continuidade pós-crash) · US-02 (anti-regressão FM-10) · US-03 (CLI stream)</div>
     </div>
   </div>
 </details>
 
-<details class="sprint">
-  <summary><span class="sid">Sprint 4</span> <span class="stitle">Hello SOC + arXiv</span> <span class="badge pending">PLANEJADA</span></summary>
+<details class="sprint" open>
+  <summary><span class="sid">Sprint 4</span> <span class="stitle">Hello SOC + arXiv</span> <span class="badge current">PRÓXIMA</span></summary>
   <div class="sprint-body">
     <dl class="w5h1">
       <dt>WHAT</dt><dd>Demo end-to-end real ("Hello SOC") + submissão arXiv do manuscrito + DOI Zenodo + <code>scripts/build_dashboard.py</code> (gerador deste painel).</dd>
@@ -405,6 +405,11 @@
     <h2 style="margin-top: 0;">Timeline recente — pós-Sprint-2</h2>
     <ul class="timeline">
       <li>
+        <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/c324e58">c324e58</a></span><span class="phase-tag">3.F MERGE</span></div>
+        <div class="when">2026-05-31</div>
+        <div class="what"><code>Merge PR #17</code> — TD-003 Resolved (FM-10 closure registrada) + cobertura final</div>
+      </li>
+      <li>
         <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/2a1f8b2">2a1f8b2</a></span><span class="phase-tag">3.E MERGE</span></div>
         <div class="when">2026-05-31</div>
         <div class="what"><code>Merge PR #16</code> — CLI <code>atomic-dag stream</code> subcommand + exit codes 0/1/2</div>
@@ -470,7 +475,7 @@
 </div>
 
 <footer>
-  Gerado em 2026-05-17, atualizado em 2026-05-31 (Phase 3.F — TD-003 / FM-10 Resolved; cobertura final 98.78%, 337 testes). Dados embutidos no HTML; abre offline.
+  Gerado em 2026-05-17, atualizado em 2026-05-31 (Phase 3.G — Sprint 3 FECHADO; tag annotated v0.4.0-sprint3; FM-10 neutralizado com prova adversarial em CI). Dados embutidos no HTML; abre offline.
   Atualização do status é obrigatória por invariante I-DASH até existir <code>scripts/build_dashboard.py</code> (entregável Sprint 4, nível N2).
 </footer>
 
