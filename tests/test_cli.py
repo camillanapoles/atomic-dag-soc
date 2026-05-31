@@ -1,7 +1,9 @@
-"""Tests for atomic_dag.cli — 24 scenarios (12 herdados + 12 Phase 2.E)."""
+"""Tests for atomic_dag.cli — 24 scenarios (12 herdados + 12 Phase 2.E)
+plus Phase 3.E `stream` subcommand scenarios."""
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Any
 
@@ -370,3 +372,120 @@ def test_transition_wal_event_written(tmp_path: Path) -> None:
     assert isinstance(e["gate_result"]["reasons"], list)
     assert isinstance(e["duration_ms"], int)
     assert e["duration_ms"] >= 0
+
+
+# ── Phase 3.E: `stream` subcommand (DA-3, separate from transition) ─────
+
+
+def _mk_stream_project(tmp_path: Path, cursor: str = "C-001") -> Path:
+    """Project layout per errata 0.5a: state.json at root, WAL in .atomic-dag/."""
+    (tmp_path / "state.json").write_text(
+        json.dumps({"cursor": cursor, "updated_at": "t"})
+    )
+    (tmp_path / ".atomic-dag").mkdir(parents=True)
+    (tmp_path / ".atomic-dag" / "wal.jsonl").write_text("")
+    return tmp_path
+
+
+def _run_input(*args: str, stdin: str) -> click.testing.Result:
+    runner = click.testing.CliRunner()
+    return runner.invoke(main, args, input=stdin)
+
+
+def test_stream_from_file_advances(tmp_path: Path) -> None:
+    p = _mk_stream_project(tmp_path, "C-001")
+    events = tmp_path / "events.jsonl"
+    events.write_text(
+        '{"event_id":"e1","ts":"t","payload":{},"expected_cursor_from":"C-001"}\n'
+        '{"event_id":"e2","ts":"t","payload":{},"expected_cursor_from":"C-002"}\n'
+    )
+    r = _run("--project", str(p), "stream", "--events-file", str(events))
+    assert r.exit_code == 0, r.output
+    assert "processed 2 events" in r.output
+    assert "stream e1: C-001 -> C-002" in r.output
+    assert "stream e2: C-002 -> C-003" in r.output
+    assert json.loads((p / "state.json").read_text())["cursor"] == "C-003"
+
+
+def test_stream_from_stdin(tmp_path: Path) -> None:
+    p = _mk_stream_project(tmp_path, "C-001")
+    line = '{"event_id":"e1","ts":"t","payload":{},"expected_cursor_from":"C-001"}\n'
+    r = _run_input("--project", str(p), "stream", stdin=line)
+    assert r.exit_code == 0, r.output
+    assert "processed 1 events, cursor now C-002" in r.output
+    assert json.loads((p / "state.json").read_text())["cursor"] == "C-002"
+
+
+def test_stream_json_output(tmp_path: Path) -> None:
+    p = _mk_stream_project(tmp_path, "C-001")
+    line = '{"event_id":"e1","ts":"t","payload":{},"expected_cursor_from":"C-001"}\n'
+    r = _run_input("--project", str(p), "stream", "--json", stdin=line)
+    assert r.exit_code == 0, r.output
+    out = json.loads(r.output)
+    assert out["processed"] == 1
+    assert out["final_cursor"] == "C-002"
+    assert out["results"][0]["advanced_cursor_to"] == "C-002"
+    assert out["results"][0]["wal_event_logged"] is True
+    assert out["results"][0]["idempotent_replay"] is False
+
+
+def test_stream_cursor_mismatch_exit_1(tmp_path: Path) -> None:
+    p = _mk_stream_project(tmp_path, "C-001")
+    line = '{"event_id":"e1","ts":"t","payload":{},"expected_cursor_from":"C-999"}\n'
+    r = _run_input("--project", str(p), "stream", stdin=line)
+    assert r.exit_code == 1
+    assert "C-999" in r.output
+    assert "C-001" in r.output
+    # no mutation on mismatch
+    assert json.loads((p / "state.json").read_text())["cursor"] == "C-001"
+
+
+def test_stream_malformed_jsonl_exit_2(tmp_path: Path) -> None:
+    p = _mk_stream_project(tmp_path, "C-001")
+    r = _run_input("--project", str(p), "stream", stdin="{not json\n")
+    assert r.exit_code == 2
+    assert "malformed event line" in r.output
+
+
+def test_stream_missing_field_exit_2(tmp_path: Path) -> None:
+    p = _mk_stream_project(tmp_path, "C-001")
+    line = '{"event_id":"e1","ts":"t"}\n'  # missing expected_cursor_from
+    r = _run_input("--project", str(p), "stream", stdin=line)
+    assert r.exit_code == 2
+    assert "malformed event line" in r.output
+
+
+def test_stream_non_object_jsonl_exit_2(tmp_path: Path) -> None:
+    """A bare JSON value (e.g. a list) is not subscriptable → TypeError → exit 2."""
+    p = _mk_stream_project(tmp_path, "C-001")
+    r = _run_input("--project", str(p), "stream", stdin="[1, 2, 3]\n")
+    assert r.exit_code == 2
+    assert "malformed event line" in r.output
+
+
+def test_stream_missing_state_json_exit_2(tmp_path: Path) -> None:
+    """state.json absent → tick_streaming raises FileNotFoundError → exit 2."""
+    # project dir exists (required by --project) but no state.json
+    line = '{"event_id":"e1","ts":"t","payload":{},"expected_cursor_from":"C-001"}\n'
+    r = _run_input("--project", str(tmp_path), "stream", stdin=line)
+    assert r.exit_code == 2
+
+
+def test_stream_idempotent_replay(tmp_path: Path) -> None:
+    p = _mk_stream_project(tmp_path, "C-001")
+    line = '{"event_id":"e1","ts":"t","payload":{},"expected_cursor_from":"C-001"}\n'
+    _run_input("--project", str(p), "stream", stdin=line)
+    # replay same event_id (cursor already at C-002)
+    line2 = '{"event_id":"e1","ts":"t","payload":{},"expected_cursor_from":"C-002"}\n'
+    r = _run_input("--project", str(p), "stream", stdin=line2)
+    assert r.exit_code == 0, r.output
+    assert "idempotent replay" in r.output
+    # cursor unchanged by the replay
+    assert json.loads((p / "state.json").read_text())["cursor"] == "C-002"
+
+
+def test_stream_empty_input_processes_zero(tmp_path: Path) -> None:
+    p = _mk_stream_project(tmp_path, "C-001")
+    r = _run_input("--project", str(p), "stream", stdin="\n  \n")
+    assert r.exit_code == 0, r.output
+    assert "processed 0 events, cursor now " in r.output
