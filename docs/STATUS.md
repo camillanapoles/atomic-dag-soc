@@ -7,7 +7,7 @@
 ## Branch corrente
 
 - **Nome:** `main` (Sprint 2 mergeada via PR #1; 2.H/2.I/2.J/2.K mergeadas via PRs #2/#7/#3/#8 respectivamente)
-- **HEAD:** `8e1bea3` (Sprint 4 aberto; 4.A merged — ADR-008; 4.B ADR-009+api/llm-bridge em PR)
+- **HEAD:** `90f1d8c` (Sprint 4 em curso; 4.A+4.B merged; 4.C llm_bridge.py em PR)
 - **Tag mais recente:** `v0.4.0-sprint3` (annotated, lição D8) — Sprint 3 close; precedente `v0.3.0-sprint2` em `d9a785b`
 - **Commits ahead de main:** 0 (mergeada em main)
 - **Pages:** publicado em `https://camillanapoles.github.io/atomic-dag-soc/` (build automático via push to main em `/docs`); root redireciona para `/dashboard.html` desde 2.K (D11 fechada)
@@ -16,6 +16,7 @@
 
 | SHA | Fase | Quando | Mensagem |
 |---|---|---|---|
+| [`90f1d8c`](https://github.com/camillanapoles/atomic-dag-soc/commit/90f1d8c) | **4.B MERGE** | 2026-06-01 | `Merge PR #20 — docs(4.b): ADR-009 llm-bridge minimal scope + api/llm-bridge.md` |
 | [`8e1bea3`](https://github.com/camillanapoles/atomic-dag-soc/commit/8e1bea3) | **4.A MERGE** | 2026-05-31 | `Merge PR #19 — docs(4.a): ADR-008 publication ordering rule` |
 | [`c324e58`](https://github.com/camillanapoles/atomic-dag-soc/commit/c324e58) | **3.F MERGE** | 2026-05-31 | `Merge PR #17 — docs(3.f): TD-003 Resolved + cobertura final` |
 | [`2a1f8b2`](https://github.com/camillanapoles/atomic-dag-soc/commit/2a1f8b2) | **3.E MERGE** | 2026-05-31 | `Merge PR #16 — feat(3.e): CLI atomic-dag stream + exit codes 0/1/2` |
@@ -195,7 +196,8 @@ ADR-005 (timing original Sprint-4) **superseded by ADR-008** (parcial: mecanismo
 | `CLAUDE.md` | Layer-1 system instructions lido pelo Claude Code no boot de toda sessão; nicknames + canais Discussions + fluxo + mandatos M1-M5 + invariantes + capacidades MCP (§3.5) + mapa de fontes (166→~210 linhas após §3.5) | vigente, **boot context** |
 | `README.md` | README do projeto | vigente |
 | `TECHNICAL_DEBT.md` | Registro de dívidas técnicas (TD-001 writer 89-94 ativa; TD-002 stubs resolved; TD-003 FM-10 **resolved 3.C+3.D**; TD-004 FM-01 mitigada) | vigente |
-| `pyproject.toml` | Config Python: deps, pytest, ruff, mypy, coverage (omit=[]) | vigente |
+| `pyproject.toml` | Config Python: deps, optional-deps (`[llm]=anthropic`, `[dev]`), pytest, ruff, mypy, coverage (omit=[]) | vigente |
+| `src/atomic_dag/llm_bridge.py` | Ponte LLM↔Python (Sprint 4.C): `bridge_transition`, `bridge_stream`, `LLMProvider` Protocol, `AnthropicProvider`, `BridgeAPIError`/`BridgeParseError`. Escreve só body (frontmatter byte-preserved); estado delegado a `execute_transition`/`tick_streaming` (ADR-009 D-bridge-3) | vigente |
 | `.github/workflows/ci.yml` | CI: ruff + mypy strict + pytest, matriz 3.11/3.12/3.13 (ver Dívidas D1, D2) | vigente |
 
 ## Mandato operacional (referência rápida)

@@ -143,9 +143,9 @@
 <h1>atomic-dag-soc — Programa completo (Sprint 0 → 8)</h1>
 <div class="meta">
   Branch <strong>main</strong> &middot;
-  HEAD <a href="https://github.com/camillanapoles/atomic-dag-soc/commit/8e1bea3">8e1bea3</a> (merge PR #19 — 4.A) &middot;
+  HEAD <a href="https://github.com/camillanapoles/atomic-dag-soc/commit/90f1d8c">90f1d8c</a> (merge PR #20 — 4.B) &middot;
   Tag <strong>v0.4.0-sprint3</strong> &middot;
-  Sprint 4 <strong>EM CURSO</strong> &middot; 4.A ☑ &middot; 4.B (ADR-009 + api/llm-bridge) em PR
+  Sprint 4 <strong>EM CURSO</strong> &middot; 4.A ☑ 4.B ☑ &middot; 4.C (llm_bridge.py + testes) em PR
 </div>
 
 <p class="note">
@@ -333,7 +333,7 @@
       <ul>
         <li class="done"><span class="tk">4.A</span> ADR-008 — regra de ordenação publicação (arXiv S7 / DOI S8) + otimização-antes-de-publicação + replan contínuo</li>
         <li class="done"><span class="tk">4.B</span> ADR-009 llm-bridge minimal scope + docs/api/llm-bridge.md contrato observável</li>
-        <li class="todo"><span class="tk">4.C</span> llm_bridge.py — ponte runtime LLM ↔ assembler</li>
+        <li class="done"><span class="tk">4.C</span> llm_bridge.py + testes mock (modo S-A) — ponte runtime LLM ↔ assembler</li>
         <li class="todo"><span class="tk">4.D</span> hello-soc — workflow demonstrativo end-to-end</li>
         <li class="todo"><span class="tk">4.E</span> build_dashboard.py — gerador automático do status (N2)</li>
         <li class="todo"><span class="tk">4.F</span> merge + tag v0.5.0</li>
@@ -457,6 +457,11 @@
     <h2 style="margin-top: 0;">Timeline recente — pós-Sprint-2</h2>
     <ul class="timeline">
       <li>
+        <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/90f1d8c">90f1d8c</a></span><span class="phase-tag">4.B MERGE</span></div>
+        <div class="when">2026-06-01</div>
+        <div class="what"><code>Merge PR #20</code> — ADR-009 llm-bridge minimal scope + api/llm-bridge.md contrato</div>
+      </li>
+      <li>
         <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/8e1bea3">8e1bea3</a></span><span class="phase-tag">4.A MERGE</span></div>
         <div class="when">2026-05-31</div>
         <div class="what"><code>Merge PR #19</code> — ADR-008 publication ordering rule; Sprint 4 aberto</div>
@@ -537,7 +542,7 @@
 </div>
 
 <footer>
-  Gerado em 2026-05-17, atualizado em 2026-06-01 (Phase 4.B — ADR-009 llm-bridge minimal scope + api/llm-bridge.md contrato; HEAD main 8e1bea3; Sprint 4 em curso). Dados embutidos no HTML; abre offline.
+  Gerado em 2026-05-17, atualizado em 2026-06-01 (Phase 4.C — llm_bridge.py + testes mock; primeiro código LLM↔Python operacional; HEAD main 90f1d8c; Sprint 4 em curso). Dados embutidos no HTML; abre offline.
   Atualização do status é obrigatória por invariante I-DASH até existir <code>scripts/build_dashboard.py</code> (entregável Sprint 4 — fase 4.E, nível N2).
 </footer>
 
