@@ -7,7 +7,7 @@
 ## Branch corrente
 
 - **Nome:** `main` (Sprint 2 mergeada via PR #1; 2.H/2.I/2.J/2.K mergeadas via PRs #2/#7/#3/#8 respectivamente)
-- **HEAD:** `c324e58` (Sprint 3 **FECHADO**: 3.A→3.F mergeadas; 3.G em PR — WAL humano + tag annotated `v0.4.0-sprint3`)
+- **HEAD:** `6818856` (Sprint 3 **FECHADO** em 3.G; Sprint 4 aberto — 4.A ADR-008 em PR)
 - **Tag mais recente:** `v0.4.0-sprint3` (annotated, lição D8) — Sprint 3 close; precedente `v0.3.0-sprint2` em `d9a785b`
 - **Commits ahead de main:** 0 (mergeada em main)
 - **Pages:** publicado em `https://camillanapoles.github.io/atomic-dag-soc/` (build automático via push to main em `/docs`); root redireciona para `/dashboard.html` desde 2.K (D11 fechada)
@@ -78,17 +78,34 @@ Cobertura global 98.78%, suite 337 testes. Todas 7 fases (3.A-3.G) mergeadas
 via PRs #11-#17, CI 3-matriz verde em cada (D2). Narrativa completa do sprint
 em `docs/WAL_HUMANO_SPRINT3.md`.
 
-## Próximo gate — Sprint 4 (Hello SOC + arXiv + DOI)
+## Sprint 4 — ABERTO (Hello SOC)
 
-Sprint 3 fechou o último high-RPN do FMEA antes do MVP. Próxima sprint sai
-da arquitetura interna para entrega externa: workflow "Hello SOC" demonstrativo
-end-to-end, submissão arXiv (manuscrito RSL_V2 em PQMS 9.68), DOI Zenodo,
-`scripts/build_dashboard.py` (gerador automático deste painel — N2). Detalhes
-em `docs/PLANO_ENGENHARIA_SOFTWARE_V1.md` e card Sprint 4 do dashboard.
+Sprint 3 fechou o último high-RPN do FMEA antes do MVP. Sprint 4 sai da
+arquitetura interna para entrega externa: workflow "Hello SOC" demonstrativo
+end-to-end, ponte LLM (`llm_bridge.py`), `scripts/build_dashboard.py` (gerador
+automático deste painel — N2). **Sem publicação nesta sprint.**
 
-Cursor de partida Sprint 4: `FROM <SHA do merge 3.G>` (a confirmar pós-merge).
+Fases: 4.A ADR-008 (regra de ordenação publicação) · 4.B api/llm-bridge.md ·
+4.C llm_bridge.py · 4.D hello-soc · 4.E build_dashboard · 4.F merge+tag `v0.5.0`.
 
-Cursor de partida: `FROM 1d6217e` (HEAD main pós-2.K merge + 2.L expandida com DOC-SELF-001 / README sync / CLAUDE.md §1 nota terminológica).
+Cursor de partida Sprint 4: `FROM 6818856` (HEAD main pós-merge 3.G).
+
+### Roadmap v3 (S4-S8) — resequenciado por ADR-008
+
+Decidido 2026-05-31 (ADR-008): ordenação por permanência + otimização-antes-de-
+publicação + replan contínuo (ADR-003 Lesson 2). A **regra** é fixa; as **datas**
+são recalibráveis a cada fechamento de sprint.
+
+| Sprint | Versão | Tema | Publicação |
+|---|---|---|---|
+| **S4** | v0.5.0 | Hello SOC + llm-bridge + build_dashboard | nenhuma |
+| **S5** | v0.6.0 | Robustez — writer TD-001 → reconcile → per-atom locking (fecha FM-01/TD-004) | nenhuma |
+| **S6** | v0.7.0 | Meta-uso (US-07 / DOC-SELF-001) + validação externa + benchmarks | nenhuma |
+| **S7** | v0.8.0 | **Otimização** + **arXiv** (preprint retratável); repo público; webhook Zenodo ARMADO | arXiv |
+| **S8** | v1.0.0 | **Otimização final** + **DOI mint** (gate isolado, último ato, permanente) | DOI Zenodo |
+
+ADR-005 (timing original Sprint-4) **superseded by ADR-008** (parcial: mecanismo
+"Zenodo requires public" retido; timing arXiv→S7, DOI→S8).
 
 ## Dívidas registradas (pós-Sprint 2)
 
@@ -121,9 +138,10 @@ Cursor de partida: `FROM 1d6217e` (HEAD main pós-2.K merge + 2.L expandida com 
 | `ADR-002-python-3-11-plus.md` | Constraint de toolchain Python ≥ 3.11 | vigente |
 | `ADR-003-sprint1-lessons.md` | Três lições do Sprint 1: omit honesto, delta=0.5, ordem `parse→gate→fsm→write→wal` | vigente, **autoridade** |
 | `ADR-004-atomic-writes.md` | `writer.py` tmp+fsync+rename (FM-02 fechado) | vigente |
-| `ADR-005-zenodo-timing-strategy.md` | Defer DOI público até Sprint 4 (Hello SOC + arXiv) | vigente |
+| `ADR-005-zenodo-timing-strategy.md` | Defer DOI público até Sprint 4 (Hello SOC + arXiv) | **superseded by ADR-008** (timing; mecanismo retido) |
 | `ADR-006-sprint-2-refactor-transitions.md` | Especificação completa do módulo `transitions`: D1, D2, D4-D8, D11, DA-1/2/3, D3 rejeitado | vigente, **autoridade** |
 | `ADR-007-sprint-3-fm10-streaming.md` | Especificação completa do módulo `streaming` (Sprint 3, FM-10 closure): §0 nota terminológica Popperiana (closure durável D13), D1-D8 (ordem operação, StreamEvent/TickResult, idempotência, WAL schema, exit codes, concorrência, regression invariant D7 = critério Popperiano-mestre, bateria adversarial), DA-1/2/3 resolvidos, 4 alternativas rejeitadas | vigente, **autoridade** |
+| `ADR-008-publication-ordering-rule.md` | Regra de ordenação de publicação por permanência (arXiv retratável S7; DOI permanente S8, gate isolado) + otimização-antes-de-publicação + replan contínuo (ADR-003 L2); supersede ADR-005 parcialmente (timing) | vigente, **autoridade** |
 
 ### Especificações de API (`docs/api/`)
 

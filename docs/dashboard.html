@@ -37,7 +37,7 @@
   @media (max-width: 980px) { .grid-2 { grid-template-columns: 1fr; } }
   .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 6px; padding: 16px; }
   /* Macro roadmap strip */
-  .roadmap { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+  .roadmap { display: grid; grid-template-columns: repeat(9, 1fr); gap: 8px; }
   .phase {
     background: var(--panel-2); border: 1px solid var(--border); border-radius: 4px;
     padding: 10px 8px; text-align: center; min-height: 78px;
@@ -140,12 +140,12 @@
 </head>
 <body>
 
-<h1>atomic-dag-soc — Programa completo (Sprint 0 → 6)</h1>
+<h1>atomic-dag-soc — Programa completo (Sprint 0 → 8)</h1>
 <div class="meta">
   Branch <strong>main</strong> &middot;
-  HEAD <a href="https://github.com/camillanapoles/atomic-dag-soc/commit/c324e58">c324e58</a> (merge PR #17 — 3.F) &middot;
-  Tag <strong>v0.4.0-sprint3</strong> (annotated, lição D8) &middot;
-  Sprint 3 (FM-10) <strong>FECHADO</strong> &middot; 3.A→3.F mergeadas &middot; 3.G em PR (fechamento)
+  HEAD <a href="https://github.com/camillanapoles/atomic-dag-soc/commit/6818856">6818856</a> (merge PR #18 — 3.G) &middot;
+  Tag <strong>v0.4.0-sprint3</strong> &middot;
+  Sprint 3 (FM-10) <strong>FECHADO</strong> &middot; Sprint 4 <strong>ABERTO</strong> &middot; 4.A (ADR-008) em PR
 </div>
 
 <p class="note">
@@ -189,9 +189,11 @@
     <div class="phase done"><div><div class="id">S1</div><div class="label">FSM core</div></div><div class="status-dot"></div></div>
     <div class="phase done"><div><div class="id">S2</div><div class="label">Transitions + CLI</div></div><div class="status-dot"></div></div>
     <div class="phase done"><div><div class="id">S3</div><div class="label">FM-10 closure</div></div><div class="status-dot"></div></div>
-    <div class="phase current"><div><div class="id">S4</div><div class="label">Hello SOC + arXiv</div></div><div class="status-dot"></div></div>
-    <div class="phase pending"><div><div class="id">S5</div><div class="label">Reconcile + writer fix</div></div><div class="status-dot"></div></div>
-    <div class="phase pending"><div><div class="id">S6</div><div class="label">Validação externa</div></div><div class="status-dot"></div></div>
+    <div class="phase current"><div><div class="id">S4</div><div class="label">Hello SOC</div></div><div class="status-dot"></div></div>
+    <div class="phase pending"><div><div class="id">S5</div><div class="label">Robustez (reconcile + locks)</div></div><div class="status-dot"></div></div>
+    <div class="phase pending"><div><div class="id">S6</div><div class="label">Meta-uso + validação</div></div><div class="status-dot"></div></div>
+    <div class="phase pending"><div><div class="id">S7</div><div class="label">Otimização + arXiv</div></div><div class="status-dot"></div></div>
+    <div class="phase pending"><div><div class="id">S8</div><div class="label">Otimização + DOI (último ato)</div></div><div class="status-dot"></div></div>
   </div>
   <div class="legend">
     <span><span class="dot" style="background: var(--done)"></span>fechada (tag publicada)</span>
@@ -315,27 +317,28 @@
 </details>
 
 <details class="sprint" open>
-  <summary><span class="sid">Sprint 4</span> <span class="stitle">Hello SOC + arXiv</span> <span class="badge current">PRÓXIMA</span></summary>
+  <summary><span class="sid">Sprint 4</span> <span class="stitle">Hello SOC</span> <span class="badge current">EM CURSO</span></summary>
   <div class="sprint-body">
     <dl class="w5h1">
-      <dt>WHAT</dt><dd>Demo end-to-end real ("Hello SOC") + submissão arXiv do manuscrito + DOI Zenodo + <code>scripts/build_dashboard.py</code> (gerador deste painel).</dd>
-      <dt>FUNC</dt><dd class="func">Liga no produto: <strong>demo pública + publicação</strong> — workflow real demonstrável + DOI citável + auto-geração do status (N2).</dd>
-      <dt>WHY</dt><dd>Transformar o framework de "implementado e testado" em "demonstrado e publicado". A demo prova uso real; o DOI dá rastreabilidade acadêmica.</dd>
-      <dt>HOW</dt><dd>Bridge LLM real → script Hello SOC → pacote de submissão arXiv (PRISMA completo) → DOI Zenodo → build_dashboard.py automatiza o status (N2).</dd>
-      <dt>WHERE</dt><dd>bridge LLM · <code>scripts/build_dashboard.py</code> · pacote arXiv · MANUSCRITO_RSL_V2 (já em PQMS 9.68)</dd>
-      <dt>WHO</dt><dd>@orquestrador planeja · @executor implementa · @cnmfs autoriza submissão</dd>
-      <dt>WHEN</dt><dd>Após Sprint 3 (precisa do framework completo com streaming).</dd>
+      <dt>WHAT</dt><dd>Demo end-to-end real ("Hello SOC") + ponte LLM (<code>llm_bridge.py</code>) + <code>scripts/build_dashboard.py</code> (gerador deste painel). <strong>Sem publicação</strong> — arXiv/DOI resequenciados para S7/S8 (ADR-008).</dd>
+      <dt>FUNC</dt><dd class="func">Liga no produto: <strong>demo real + auto-status</strong> — workflow demonstrável end-to-end com runtime LLM + auto-geração do dashboard (N2).</dd>
+      <dt>WHY</dt><dd>Transformar o framework de "implementado e testado" em "demonstrado": a demo prova uso real e a ponte LLM conecta o assembler determinístico ao runtime não-determinístico. Publicação fica para depois da robustez+otimização (ADR-008).</dd>
+      <dt>HOW</dt><dd>ADR-008 (ordenação publicação) → api/llm-bridge.md → <code>llm_bridge.py</code> → script Hello SOC → build_dashboard.py automatiza o status (N2) → merge+tag v0.5.0.</dd>
+      <dt>WHERE</dt><dd><code>ADR-008</code> · <code>docs/api/llm-bridge.md</code> · <code>src/atomic_dag/llm_bridge.py</code> (NOVO) · <code>scripts/build_dashboard.py</code> (NOVO) · hello-soc demo</dd>
+      <dt>WHO</dt><dd>@orquestrador planeja · @executor implementa + tríade + push · @cnmfs autoriza cada <code>go</code> + merge</dd>
+      <dt>WHEN</dt><dd>Após Sprint 3 (precisa do framework completo com streaming). I3 preservada (módulos novos).</dd>
     </dl>
-    <div class="expect"><span class="lbl">EXPECTATIVA AO FINAL</span>workflow "Hello SOC" rodando end-to-end; manuscrito submetido ao arXiv; DOI Zenodo emitido; <code>build_dashboard.py</code> regenera este dashboard a partir de STATUS.md + git log (fecha o ciclo de auto-atualização — nível N2).</div>
-    <div class="pmap"><span class="lbl">MAPA DE PRODUÇÃO (entregáveis macro — a decompor em 3.A-style quando Sprint abrir)</span>
+    <div class="expect"><span class="lbl">EXPECTATIVA AO FINAL</span>workflow "Hello SOC" rodando end-to-end com ponte LLM; <code>build_dashboard.py</code> regenera este dashboard a partir de STATUS.md + git log (fecha o ciclo de auto-atualização — nível N2); cov global ≥95%; CI 3-matriz verde; tag <code>v0.5.0</code>. Sem publicação.</div>
+    <div class="pmap"><span class="lbl">MAPA DE PRODUÇÃO (tasks 4.A → 4.F)</span>
       <ul>
-        <li class="todo"><span class="tk">bridge LLM</span> — conectar runtime real ao assembler</li>
-        <li class="todo"><span class="tk">Hello SOC</span> — workflow demonstrativo end-to-end</li>
-        <li class="todo"><span class="tk">build_dashboard.py</span> — gerador automático do status (N2)</li>
-        <li class="todo"><span class="tk">pacote arXiv</span> — PRISMA flow + checklist 27 itens</li>
-        <li class="todo"><span class="tk">DOI Zenodo</span> — publicação com identificador permanente</li>
+        <li class="done"><span class="tk">4.A</span> ADR-008 — regra de ordenação publicação (arXiv S7 / DOI S8) + otimização-antes-de-publicação + replan contínuo</li>
+        <li class="todo"><span class="tk">4.B</span> docs/api/llm-bridge.md — contrato observável da ponte LLM</li>
+        <li class="todo"><span class="tk">4.C</span> llm_bridge.py — ponte runtime LLM ↔ assembler</li>
+        <li class="todo"><span class="tk">4.D</span> hello-soc — workflow demonstrativo end-to-end</li>
+        <li class="todo"><span class="tk">4.E</span> build_dashboard.py — gerador automático do status (N2)</li>
+        <li class="todo"><span class="tk">4.F</span> merge + tag v0.5.0</li>
       </ul>
-      <div class="us">user story coberta: US-04 (continuidade entre sessões LLM — base estratégica) · também desbloqueia comunicação pública</div>
+      <div class="us">user story coberta: US-04 (continuidade entre sessões LLM — base estratégica) · US-05 (demo Hello SOC)</div>
     </div>
   </div>
 </details>
@@ -374,7 +377,7 @@
       <dt>HOW</dt><dd>Criar <code>.atomic-dag/</code> no próprio repo → atomizar STATUS.md como atom-cursor → atomizar cada Sprint como átomo → executar <code>atomic-dag transition DOC-SELF-001 check</code> → benchmark comparativo (taxa de reprocessamento = 0, cursor preservado cross-session).</dd>
       <dt>WHERE</dt><dd><code>.atomic-dag/state.json</code> + <code>wal.jsonl</code> no próprio repo · DOC-SELF-001 como instância · benchmark externo</dd>
       <dt>WHO</dt><dd>@orquestrador planeja · @executor implementa · comunidade científica valida (externa)</dd>
-      <dt>WHEN</dt><dd>Após Sprint 5 (framework precisa estar completo + publicado via Sprint 4 DOI).</dd>
+      <dt>WHEN</dt><dd>Após Sprint 5 (framework precisa estar robusto). Antecede a otimização+publicação de S7/S8 (ADR-008).</dd>
     </dl>
     <div class="expect"><span class="lbl">EXPECTATIVA AO FINAL</span><code>.atomic-dag/state.json</code> gerencia DOC-SELF-001 como ATÔMICO operacional; benchmark reporta cursor preservado cross-session + taxa reprocessamento = 0; experimento externo aplica framework a domínio ≠ SOC. <strong>O sistema valida a si mesmo.</strong></div>
     <div class="pmap"><span class="lbl">MAPA DE PRODUÇÃO (entregáveis macro — a decompor quando Sprint abrir)</span>
@@ -386,6 +389,55 @@
         <li class="todo"><span class="tk">validação externa</span> — domínio ≠ SOC aplica o framework</li>
       </ul>
       <div class="us">user story coberta: US-07 (validação empírica externa — meta-uso)</div>
+    </div>
+  </div>
+</details>
+
+<details class="sprint">
+  <summary><span class="sid">Sprint 7</span> <span class="stitle">Otimização + arXiv</span> <span class="badge pending">PLANEJADA</span></summary>
+  <div class="sprint-body">
+    <dl class="w5h1">
+      <dt>WHAT</dt><dd>Fase dedicada de <strong>otimização</strong> (performance / cobertura / refactor) + <strong>arXiv</strong> (preprint retratável). Repo torna-se público aqui; webhook Zenodo <strong>ARMADO</strong> (não disparado); releases retroativas; CITATION.cff scaffold.</dd>
+      <dt>FUNC</dt><dd class="func">Liga no produto: <strong>visibilidade pública + qualidade publicada</strong> — preprint citável descrevendo um sistema robusto e otimizado.</dd>
+      <dt>WHY</dt><dd>ADR-008 D-pub-1: artefato <em>retratável</em> (arXiv) publica-se só após robustez (S5) + otimização dedicada. O que se publica deve descrever um sistema otimizado, não meramente funcional.</dd>
+      <dt>HOW</dt><dd>Otimização (perf/cov/refactor) → reveal público do repo → releases retroativas para todas as tags → webhook Zenodo armado → CITATION.cff → pacote arXiv (PRISMA) → submissão.</dd>
+      <dt>WHERE</dt><dd>perf/refactor across modules · GitHub Pages/Releases públicos · <code>CITATION.cff</code> · webhook Zenodo · MANUSCRITO_RSL_V2 (PQMS 9.68)</dd>
+      <dt>WHO</dt><dd>@orquestrador planeja · @executor implementa · @cnmfs autoriza reveal + submissão</dd>
+      <dt>WHEN</dt><dd>Após Sprint 6 (validação externa). Preprint é retratável — v2 é submissão normal (ADR-008).</dd>
+    </dl>
+    <div class="expect"><span class="lbl">EXPECTATIVA AO FINAL</span>sistema otimizado (perf/cov consolidados); repo público com releases retroativas; preprint arXiv submetido e citável-como-preprint; webhook Zenodo armado mas <strong>não disparado</strong>; tag v0.8.0.</div>
+    <div class="pmap"><span class="lbl">MAPA DE PRODUÇÃO (entregáveis macro — a decompor quando Sprint abrir)</span>
+      <ul>
+        <li class="todo"><span class="tk">otimização</span> — perf / cobertura / refactor dedicados</li>
+        <li class="todo"><span class="tk">reveal público</span> — repo + releases retroativas todas as tags</li>
+        <li class="todo"><span class="tk">webhook armado</span> — Zenodo configurado, não disparado</li>
+        <li class="todo"><span class="tk">arXiv</span> — pacote PRISMA + submissão preprint</li>
+      </ul>
+      <div class="us">user story coberta: US-08 (publicação acadêmica — preprint)</div>
+    </div>
+  </div>
+</details>
+
+<details class="sprint">
+  <summary><span class="sid">Sprint 8</span> <span class="stitle">Otimização final + DOI (último ato)</span> <span class="badge pending">PLANEJADA</span></summary>
+  <div class="sprint-body">
+    <dl class="w5h1">
+      <dt>WHAT</dt><dd>Otimização <strong>final</strong> + <strong>DOI mint</strong> (Zenodo). Gate <strong>isolado</strong>: dispara o webhook armado em S7. Permanente. Irreversível. Release v1.0.0.</dd>
+      <dt>FUNC</dt><dd class="func">Liga no produto: <strong>citação permanente</strong> — DOI sobre um v1.0.0 finalizado, validado externamente, benchmarkado e re-otimizado.</dd>
+      <dt>WHY</dt><dd>ADR-008 D-pub-1: o DOI é <em>permanente</em> — cita um artefato fixo para sempre. É o último ato do programa, sem outro escopo no gate (análogo ao "ponto de não-retorno" do ADR-006 §D11 em escala de programa).</dd>
+      <dt>HOW</dt><dd>Otimização final → dispara webhook Zenodo (armado em S7) → DOI emitido → release v1.0.0. Nenhum outro trabalho compartilha este gate.</dd>
+      <dt>WHERE</dt><dd>otimização final · webhook Zenodo (dispara) · DOI permanente · tag/release v1.0.0</dd>
+      <dt>WHO</dt><dd>@orquestrador planeja · @executor implementa · @cnmfs autoriza o mint (ato irreversível)</dd>
+      <dt>WHEN</dt><dd>Último sprint do programa. Só sobre release finalizado + validado + benchmarkado (ADR-008 D-pub-1).</dd>
+    </dl>
+    <div class="expect"><span class="lbl">EXPECTATIVA AO FINAL</span>v1.0.0 finalizado e re-otimizado; DOI Zenodo permanente emitido (webhook S7 disparado); gate isolado sem escopo paralelo. <strong>Fim do programa.</strong></div>
+    <div class="pmap"><span class="lbl">MAPA DE PRODUÇÃO (entregáveis macro — a decompor quando Sprint abrir)</span>
+      <ul>
+        <li class="todo"><span class="tk">otimização final</span> — última consolidação perf/qualidade</li>
+        <li class="todo"><span class="tk">DOI mint</span> — dispara webhook Zenodo, identificador permanente</li>
+        <li class="todo"><span class="tk">v1.0.0</span> — release final, gate isolado, irreversível</li>
+      </ul>
+      <div class="us">user story coberta: US-09 (citação permanente — DOI v1.0.0)</div>
     </div>
   </div>
 </details>
@@ -404,6 +456,11 @@
   <div class="panel">
     <h2 style="margin-top: 0;">Timeline recente — pós-Sprint-2</h2>
     <ul class="timeline">
+      <li>
+        <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/6818856">6818856</a></span><span class="phase-tag">3.G MERGE</span></div>
+        <div class="when">2026-05-31</div>
+        <div class="what"><code>Merge PR #18</code> — fechamento Sprint 3 (WAL humano + tag v0.4.0-sprint3); Sprint 3 FECHADO</div>
+      </li>
       <li>
         <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/c324e58">c324e58</a></span><span class="phase-tag">3.F MERGE</span></div>
         <div class="when">2026-05-31</div>
@@ -475,8 +532,8 @@
 </div>
 
 <footer>
-  Gerado em 2026-05-17, atualizado em 2026-05-31 (Phase 3.G — Sprint 3 FECHADO; tag annotated v0.4.0-sprint3; FM-10 neutralizado com prova adversarial em CI). Dados embutidos no HTML; abre offline.
-  Atualização do status é obrigatória por invariante I-DASH até existir <code>scripts/build_dashboard.py</code> (entregável Sprint 4, nível N2).
+  Gerado em 2026-05-17, atualizado em 2026-05-31 (Phase 4.A — Sprint 4 ABERTO; ADR-008 regra de ordenação publicação resequenciada; HEAD main 6818856; Sprint 3 FECHADO com tag v0.4.0-sprint3). Dados embutidos no HTML; abre offline.
+  Atualização do status é obrigatória por invariante I-DASH até existir <code>scripts/build_dashboard.py</code> (entregável Sprint 4 — fase 4.E, nível N2).
 </footer>
 
 </body>
