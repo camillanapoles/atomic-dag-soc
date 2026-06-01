@@ -7,7 +7,7 @@
 ## Branch corrente
 
 - **Nome:** `main` (Sprint 2 mergeada via PR #1; 2.H/2.I/2.J/2.K mergeadas via PRs #2/#7/#3/#8 respectivamente)
-- **HEAD:** `6818856` (Sprint 3 **FECHADO** em 3.G; Sprint 4 aberto — 4.A ADR-008 em PR)
+- **HEAD:** `8e1bea3` (Sprint 4 aberto; 4.A merged — ADR-008; 4.B ADR-009+api/llm-bridge em PR)
 - **Tag mais recente:** `v0.4.0-sprint3` (annotated, lição D8) — Sprint 3 close; precedente `v0.3.0-sprint2` em `d9a785b`
 - **Commits ahead de main:** 0 (mergeada em main)
 - **Pages:** publicado em `https://camillanapoles.github.io/atomic-dag-soc/` (build automático via push to main em `/docs`); root redireciona para `/dashboard.html` desde 2.K (D11 fechada)
@@ -16,6 +16,7 @@
 
 | SHA | Fase | Quando | Mensagem |
 |---|---|---|---|
+| [`8e1bea3`](https://github.com/camillanapoles/atomic-dag-soc/commit/8e1bea3) | **4.A MERGE** | 2026-05-31 | `Merge PR #19 — docs(4.a): ADR-008 publication ordering rule` |
 | [`c324e58`](https://github.com/camillanapoles/atomic-dag-soc/commit/c324e58) | **3.F MERGE** | 2026-05-31 | `Merge PR #17 — docs(3.f): TD-003 Resolved + cobertura final` |
 | [`2a1f8b2`](https://github.com/camillanapoles/atomic-dag-soc/commit/2a1f8b2) | **3.E MERGE** | 2026-05-31 | `Merge PR #16 — feat(3.e): CLI atomic-dag stream + exit codes 0/1/2` |
 | [`d5bdf2d`](https://github.com/camillanapoles/atomic-dag-soc/commit/d5bdf2d) | **3.D MERGE** | 2026-05-30 | `Merge PR #15 — test(3.d): adversarial battery streaming (SIGKILL×50 α.3)` |
@@ -142,6 +143,7 @@ ADR-005 (timing original Sprint-4) **superseded by ADR-008** (parcial: mecanismo
 | `ADR-006-sprint-2-refactor-transitions.md` | Especificação completa do módulo `transitions`: D1, D2, D4-D8, D11, DA-1/2/3, D3 rejeitado | vigente, **autoridade** |
 | `ADR-007-sprint-3-fm10-streaming.md` | Especificação completa do módulo `streaming` (Sprint 3, FM-10 closure): §0 nota terminológica Popperiana (closure durável D13), D1-D8 (ordem operação, StreamEvent/TickResult, idempotência, WAL schema, exit codes, concorrência, regression invariant D7 = critério Popperiano-mestre, bateria adversarial), DA-1/2/3 resolvidos, 4 alternativas rejeitadas | vigente, **autoridade** |
 | `ADR-008-publication-ordering-rule.md` | Regra de ordenação de publicação por permanência (arXiv retratável S7; DOI permanente S8, gate isolado) + otimização-antes-de-publicação + replan contínuo (ADR-003 L2); supersede ADR-005 parcialmente (timing) | vigente, **autoridade** |
+| `ADR-009-llm-bridge-minimal-scope.md` | Escopo minimalista da ponte LLM para Sprint 4: chamada API + parse resposta + injeção no assembler (D-bridge-1..5). Provider Protocol abstrato + mock. LLM_PVM_FRAMEWORK visão completa fora de escopo. 3 alternativas rejeitadas | vigente, **autoridade** |
 
 ### Especificações de API (`docs/api/`)
 
@@ -149,6 +151,7 @@ ADR-005 (timing original Sprint-4) **superseded by ADR-008** (parcial: mecanismo
 |---|---|---|
 | `transitions.md` | Contrato observável de `execute_transition` + `TransitionResult` (Phase 2.B) | vigente |
 | `streaming.md` | Contrato observável de `tick_streaming` + `advance_cursor` + `StreamEvent` + `TickResult` + `StreamCursorMismatchError` + WAL schema `streaming_tick` + exit codes 0/1/2 (Phase 3.B) | vigente |
+| `llm-bridge.md` | Contrato observável de `bridge_transition` + `bridge_stream` + `LLMProvider` Protocol + `AnthropicProvider` + `BridgeAPIError/BridgeParseError` + default template + test obligations (Phase 4.B) | vigente |
 
 ### Planejamento (`docs/`)
 
