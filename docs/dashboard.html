@@ -144,9 +144,9 @@
 <div class="meta">
 <!-- BUILD:meta START -->
   Branch <strong>main</strong> &middot;
-  HEAD <a href="https://github.com/camillanapoles/atomic-dag-soc/commit/bb54224">bb54224</a> &middot;
-  Tag <strong>v0.4.0-sprint3</strong> (lightweight — D8) &middot;
-  Sprint 4 em curso; 4.A+4.B+4.C+4.D merged; 4.E build_dashboard em PR
+  HEAD <a href="https://github.com/camillanapoles/atomic-dag-soc/commit/33bd7dd">33bd7dd</a> &middot;
+  Tag <strong>v0.5.0-sprint4</strong> (D8 — natureza registrada pós-push) &middot;
+  Sprint 4 fechando; 4.A-4.E merged; 4.F fechamento em PR; tag v0.5.0-sprint4
 <!-- BUILD:meta END -->
 </div>
 
@@ -191,8 +191,8 @@
     <div class="phase done"><div><div class="id">S1</div><div class="label">FSM core</div></div><div class="status-dot"></div></div>
     <div class="phase done"><div><div class="id">S2</div><div class="label">Transitions + CLI</div></div><div class="status-dot"></div></div>
     <div class="phase done"><div><div class="id">S3</div><div class="label">FM-10 closure</div></div><div class="status-dot"></div></div>
-    <div class="phase current"><div><div class="id">S4</div><div class="label">Hello SOC</div></div><div class="status-dot"></div></div>
-    <div class="phase pending"><div><div class="id">S5</div><div class="label">Robustez (reconcile + locks)</div></div><div class="status-dot"></div></div>
+    <div class="phase done"><div><div class="id">S4</div><div class="label">Hello SOC</div></div><div class="status-dot"></div></div>
+    <div class="phase current"><div><div class="id">S5</div><div class="label">Robustez (reconcile + locks)</div></div><div class="status-dot"></div></div>
     <div class="phase pending"><div><div class="id">S6</div><div class="label">Meta-uso + validação</div></div><div class="status-dot"></div></div>
     <div class="phase pending"><div><div class="id">S7</div><div class="label">Otimização + arXiv</div></div><div class="status-dot"></div></div>
     <div class="phase pending"><div><div class="id">S8</div><div class="label">Otimização + DOI (último ato)</div></div><div class="status-dot"></div></div>
@@ -318,8 +318,8 @@
   </div>
 </details>
 
-<details class="sprint" open>
-  <summary><span class="sid">Sprint 4</span> <span class="stitle">Hello SOC</span> <span class="badge current">EM CURSO</span></summary>
+<details class="sprint">
+  <summary><span class="sid">Sprint 4</span> <span class="stitle">Hello SOC</span> <span class="badge done">DONE · v0.5.0-sprint4</span></summary>
   <div class="sprint-body">
     <dl class="w5h1">
       <dt>WHAT</dt><dd>Demo end-to-end real ("Hello SOC") + ponte LLM (<code>llm_bridge.py</code>) + <code>scripts/build_dashboard.py</code> (gerador deste painel). <strong>Sem publicação</strong> — arXiv/DOI resequenciados para S7/S8 (ADR-008).</dd>
@@ -338,15 +338,15 @@
         <li class="done"><span class="tk">4.C</span> llm_bridge.py + testes mock (modo S-A) — ponte runtime LLM ↔ assembler</li>
         <li class="done"><span class="tk">4.D</span> examples/hello-soc — 3 átomos reais end-to-end (RecordedProvider em CI; AnthropicProvider manual)</li>
         <li class="done"><span class="tk">4.E</span> scripts/build_dashboard.py — regenera meta de STATUS + gate --check em CI (I-DASH N2 mecanizado)</li>
-        <li class="todo"><span class="tk">4.F</span> merge + tag v0.5.0</li>
+        <li class="done"><span class="tk">4.F</span> fechamento Sprint 4 (WAL humano + tag v0.5.0-sprint4)</li>
       </ul>
       <div class="us">user story coberta: US-04 (continuidade entre sessões LLM — base estratégica) · US-05 (demo Hello SOC)</div>
     </div>
   </div>
 </details>
 
-<details class="sprint">
-  <summary><span class="sid">Sprint 5</span> <span class="stitle">Reconcile + writer fix</span> <span class="badge pending">PLANEJADA</span></summary>
+<details class="sprint" open>
+  <summary><span class="sid">Sprint 5</span> <span class="stitle">Reconcile + writer fix</span> <span class="badge current">PRÓXIMA</span></summary>
   <div class="sprint-body">
     <dl class="w5h1">
       <dt>WHAT</dt><dd>Comando <code>reconcile</code> (recupera estado divergente entre disco e WAL) + fechamento TD-001 (writer 89-94) + locks per-átomo (FM-01).</dd>
@@ -459,6 +459,11 @@
     <h2 style="margin-top: 0;">Timeline recente — pós-Sprint-2</h2>
     <ul class="timeline">
       <li>
+        <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/33bd7dd">33bd7dd</a></span><span class="phase-tag">4.E MERGE</span></div>
+        <div class="when">2026-06-03</div>
+        <div class="what"><code>Merge PR #23</code> — build_dashboard.py: I-DASH mecanizado N2 (regenera meta de STATUS + gate --check em CI)</div>
+      </li>
+      <li>
         <div><span class="sha"><a href="https://github.com/camillanapoles/atomic-dag-soc/commit/bb54224">bb54224</a></span><span class="phase-tag">4.D MERGE</span></div>
         <div class="when">2026-06-01</div>
         <div class="what"><code>Merge PR #22</code> — examples/hello-soc end-to-end (3 átomos reais + RecordedProvider, zero LLM real em CI)</div>
@@ -554,7 +559,7 @@
 </div>
 
 <footer>
-  Gerado em 2026-05-17, atualizado em 2026-06-01 (Phase 4.E — scripts/build_dashboard.py mecaniza a seção meta do I-DASH; HEAD main bb54224; Sprint 4 em curso). Dados embutidos no HTML; abre offline.
+  Gerado em 2026-05-17, atualizado em 2026-06-03 (Phase 4.F — Sprint 4 FECHADO; tag v0.5.0-sprint4; ADR-001 materializado + Hello SOC end-to-end + I-DASH N2; meta regenerada por build_dashboard.py). Dados embutidos no HTML; abre offline.
   A seção <code>meta</code> deste painel é regenerada de <code>STATUS.md</code> por <code>scripts/build_dashboard.py</code> (gate <code>--check</code> em CI — I-DASH N2). Timeline e dívidas permanecem bump manual nesta versão.
 </footer>
 
