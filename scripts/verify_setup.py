@@ -66,8 +66,8 @@ def main() -> int:
     # 6. Project layout sanity
     root = Path(__file__).resolve().parent.parent
     for required in ("pyproject.toml", "src/atomic_dag/__init__.py", "tests/"):
-        path = root / required
-        check(f"{required} exists", ok=path.exists())
+        target = root / required
+        check(f"{required} exists", ok=target.exists())
 
     # 7. Smoke test: --version returns
     if cli_path:
@@ -91,7 +91,7 @@ def main() -> int:
     total = len(CHECKS_PASSED) + len(CHECKS_FAILED)
     print(f"\n{len(CHECKS_PASSED)}/{total} checks passed")
     if CHECKS_FAILED:
-        print(f"\nFailed checks:\n  - " + "\n  - ".join(CHECKS_FAILED))
+        print("\nFailed checks:\n  - " + "\n  - ".join(CHECKS_FAILED))
         return 1
     return 0
 
