@@ -1,0 +1,11 @@
+{
+  "_meta": {
+    "description": "Recorded LLM responses for Hello SOC CI runs. One entry per call to provider.complete() — keyed by call order. The CI path is: 3 atoms × 1 bridge_transition('do') call = 3 responses.",
+    "recorded_against": "claude-sonnet-4-20250514 (representative outputs; not byte-exact captures)"
+  },
+  "responses": [
+    "# Introduction\n\nThe Atomic-DAG framework makes LLM progress claims *falsifiable* — in the Popperian sense of testable and refutable. State persists on disk (`state.json` + WAL); markdown is the ephemeral interface; deterministic Python is the enforcer. Each atom is a unit of work with a finite-state lifecycle gated by quality criteria that the LLM cannot bypass.\n",
+    "# Method\n\nWork units are modelled as atoms with three properties: a finite-state machine that governs transitions, a quality gate (gold/PQMS/VVV) that decides verification routing, and a write-ahead log that records every state change. The LLM produces the body content; the Python assembler verifies, transitions, and persists. This dual-layer separation (ADR-001) prevents self-reported quality inflation by structural design.\n",
+    "# Conclusion\n\nState lives on disk; the LLM is a worker, not the runtime. The framework makes \"this atom is verified\" a falsifiable claim — anyone reading the WAL can reconstruct exactly when and how each transition happened. This Hello SOC example walks three atoms through the full lifecycle (pending → in-progress → checked → verified → completed → closed) using the same `llm_bridge` module that production workflows will use.\n"
+  ]
+}
