@@ -7,8 +7,8 @@
 ## Branch corrente
 
 - **Nome:** `main` (Sprint 2 mergeada via PR #1; 2.H/2.I/2.J/2.K mergeadas via PRs #2/#7/#3/#8 respectivamente)
-- **HEAD:** `ce309c3` (Sprint 4 em curso; 4.A+4.B+4.C merged; 4.D Hello SOC em PR)
-- **Tag mais recente:** `v0.4.0-sprint3` (annotated, lição D8) — Sprint 3 close; precedente `v0.3.0-sprint2` em `d9a785b`
+- **HEAD:** `bb54224` (Sprint 4 em curso; 4.A+4.B+4.C+4.D merged; 4.E build_dashboard em PR)
+- **Tag mais recente:** `v0.4.0-sprint3` (lightweight — D8; GitHub UI não cria annotated) — Sprint 3 close; precedente `v0.3.0-sprint2` em `d9a785b`
 - **Commits ahead de main:** 0 (mergeada em main)
 - **Pages:** publicado em `https://camillanapoles.github.io/atomic-dag-soc/` (build automático via push to main em `/docs`); root redireciona para `/dashboard.html` desde 2.K (D11 fechada)
 
@@ -16,6 +16,7 @@
 
 | SHA | Fase | Quando | Mensagem |
 |---|---|---|---|
+| [`bb54224`](https://github.com/camillanapoles/atomic-dag-soc/commit/bb54224) | **4.D MERGE** | 2026-06-01 | `Merge PR #22 — feat(4.d): examples/hello-soc — end-to-end bridge demonstration` |
 | [`ce309c3`](https://github.com/camillanapoles/atomic-dag-soc/commit/ce309c3) | **4.C MERGE** | 2026-06-01 | `Merge PR #21 — feat(4.c): llm_bridge.py — LLM↔Python boundary + tests (mock)` |
 | [`90f1d8c`](https://github.com/camillanapoles/atomic-dag-soc/commit/90f1d8c) | **4.B MERGE** | 2026-06-01 | `Merge PR #20 — docs(4.b): ADR-009 llm-bridge minimal scope + api/llm-bridge.md` |
 | [`8e1bea3`](https://github.com/camillanapoles/atomic-dag-soc/commit/8e1bea3) | **4.A MERGE** | 2026-05-31 | `Merge PR #19 — docs(4.a): ADR-008 publication ordering rule` |
@@ -128,7 +129,7 @@ ADR-005 (timing original Sprint-4) **superseded by ADR-008** (parcial: mecanismo
 | **D12** | Phase 2.I (descoberta no ATO 4) | `local_proxy` do @executor filtra outbound para `*.github.io` (`x-deny-reason: host_not_allowed`); @executor não verifica Pages diretamente | aberta, cosmética operacional (config do harness, mesma classe que D7/D9/D10); fallback: @orquestrador verifica via conector |
 | **D13** | Phase 2.I (descoberta pós-2.K por releitura) | Termo "falsificável" usado em CLAUDE.md §1 e README sem nota terminológica Popperiana anexa; risco de má leitura indutora de erro em pontos de boot/entrada (humano externo ou LLM externo lendo o repo via clone/busca) | **fechada em 3.A**: closure durável em ADR-007 §0 (autoridade); parcial inicial em 2.L (CLAUDE.md §1 + README + DOC-SELF-001) |
 | **A4** | Phase 2.I (descoberta pós-2.K por releitura) | README.md em main defasado: "Sprint 1 in progress 3/4 modules / 135 tests" vs realidade `1d6217e` (Sprint 2.K closed / 9 / 256) | **fechada em 2.L**: README reescrito integralmente |
-| **I-DASH** | Phase 2.M | Toda fase que fecha DEVE bumpar `dashboard.html` + `STATUS.md` no mesmo PR; checkbox ☐→☑ do mapa de produção é parte do gate da fase; @orquestrador valida via conector. Automação N2 (`scripts/build_dashboard.py`) é entregável Sprint 4. | ativa |
+| **I-DASH** | Phase 2.M | Toda fase que fecha DEVE bumpar `dashboard.html` + `STATUS.md` no mesmo PR; checkbox ☐→☑ do mapa de produção é parte do gate da fase; @orquestrador valida via conector. | ativa; **N2 parcial em 4.E**: `scripts/build_dashboard.py` regenera a seção `meta` (HEAD/tag/fase) de STATUS.md com gate `--check` em CI; timeline+dívidas permanecem manuais (prosa curada diverge das tabelas STATUS — normalização adiada, ver [COMS] 4.E) |
 | **TD-003** | Sprint 0 | FM-10: `tick_streaming` não acopla `advance_cursor` (RPN=162) | **RESOLVIDA em 3.C+3.D**: streaming.py + advance_cursor coupling (par red→green `1049649`→`64c3f5e`); test_fm10_regression (comportamental+estrutural) + bateria adversarial (SIGKILL×50 α.3, 50/50 in_critical_window). Movida para Resolved no TECHNICAL_DEBT.md em 3.F. |
 
 ## Catálogo de documentos
@@ -200,6 +201,7 @@ ADR-005 (timing original Sprint-4) **superseded by ADR-008** (parcial: mecanismo
 | `pyproject.toml` | Config Python: deps, optional-deps (`[llm]=anthropic`, `[dev]`), pytest, ruff, mypy, coverage (omit=[]) | vigente |
 | `src/atomic_dag/llm_bridge.py` | Ponte LLM↔Python (Sprint 4.C): `bridge_transition`, `bridge_stream`, `LLMProvider` Protocol, `AnthropicProvider`, `BridgeAPIError`/`BridgeParseError`. Escreve só body (frontmatter byte-preserved); estado delegado a `execute_transition`/`tick_streaming` (ADR-009 D-bridge-3) | vigente |
 | `examples/hello-soc/` | Demonstração end-to-end (Sprint 4.D): 3 átomos reais (HELLO-001/002/003) percorrem ciclo FSM completo (pending→...→closed) com body gerado pela ponte. `RecordedProvider` em CI (zero LLM real, D-bridge-5); `AnthropicProvider` em execução manual (`--real` + `ANTHROPIC_API_KEY`). Decisão 4.D: só `do` usa `bridge_transition`; `check`/`next`/`last` usam `execute_transition` direto (3 átomos × 1 chamada LLM = 3 respostas gravadas) | vigente |
+| `scripts/build_dashboard.py` | Gerador N2 do dashboard (Sprint 4.E): regenera a seção `meta` (HEAD/tag/fase) de `dashboard.html` a partir de `STATUS.md`; modo `--check` falha CI se defasar (I-DASH mecanizado). Parsers de timeline+dívidas implementados+testados, rewrite adiado (prosa curada). Build tooling — não conta para cov de `src/atomic_dag` | vigente |
 | `.github/workflows/ci.yml` | CI: ruff + mypy strict + pytest, matriz 3.11/3.12/3.13 (ver Dívidas D1, D2) | vigente |
 
 ## Mandato operacional (referência rápida)
