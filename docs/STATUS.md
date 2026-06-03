@@ -7,8 +7,8 @@
 ## Branch corrente
 
 - **Nome:** `main` (Sprint 2 mergeada via PR #1; 2.H/2.I/2.J/2.K mergeadas via PRs #2/#7/#3/#8 respectivamente)
-- **HEAD:** `bb54224` (Sprint 4 em curso; 4.A+4.B+4.C+4.D merged; 4.E build_dashboard em PR)
-- **Tag mais recente:** `v0.4.0-sprint3` (lightweight — D8; GitHub UI não cria annotated) — Sprint 3 close; precedente `v0.3.0-sprint2` em `d9a785b`
+- **HEAD:** `33bd7dd` (Sprint 4 fechando; 4.A-4.E merged; 4.F fechamento em PR; tag v0.5.0-sprint4)
+- **Tag mais recente:** `v0.5.0-sprint4` (D8 — natureza registrada pós-push; lightweight provável via UI) — Sprint 4 close; precedente `v0.4.0-sprint3` em `6818856` (lightweight)
 - **Commits ahead de main:** 0 (mergeada em main)
 - **Pages:** publicado em `https://camillanapoles.github.io/atomic-dag-soc/` (build automático via push to main em `/docs`); root redireciona para `/dashboard.html` desde 2.K (D11 fechada)
 
@@ -16,6 +16,7 @@
 
 | SHA | Fase | Quando | Mensagem |
 |---|---|---|---|
+| [`33bd7dd`](https://github.com/camillanapoles/atomic-dag-soc/commit/33bd7dd) | **4.E MERGE** | 2026-06-03 | `Merge PR #23 — feat(4.e): build_dashboard.py — I-DASH mecanizado (N2)` |
 | [`bb54224`](https://github.com/camillanapoles/atomic-dag-soc/commit/bb54224) | **4.D MERGE** | 2026-06-01 | `Merge PR #22 — feat(4.d): examples/hello-soc — end-to-end bridge demonstration` |
 | [`ce309c3`](https://github.com/camillanapoles/atomic-dag-soc/commit/ce309c3) | **4.C MERGE** | 2026-06-01 | `Merge PR #21 — feat(4.c): llm_bridge.py — LLM↔Python boundary + tests (mock)` |
 | [`90f1d8c`](https://github.com/camillanapoles/atomic-dag-soc/commit/90f1d8c) | **4.B MERGE** | 2026-06-01 | `Merge PR #20 — docs(4.b): ADR-009 llm-bridge minimal scope + api/llm-bridge.md` |
@@ -82,17 +83,28 @@ Cobertura global 98.78%, suite 337 testes. Todas 7 fases (3.A-3.G) mergeadas
 via PRs #11-#17, CI 3-matriz verde em cada (D2). Narrativa completa do sprint
 em `docs/WAL_HUMANO_SPRINT3.md`.
 
-## Sprint 4 — ABERTO (Hello SOC)
+## Sprint 4 — FECHADO (Hello SOC)
 
-Sprint 3 fechou o último high-RPN do FMEA antes do MVP. Sprint 4 sai da
-arquitetura interna para entrega externa: workflow "Hello SOC" demonstrativo
-end-to-end, ponte LLM (`llm_bridge.py`), `scripts/build_dashboard.py` (gerador
-automático deste painel — N2). **Sem publicação nesta sprint.**
+**Sprint 4 fechado em 4.F**, tag `v0.5.0-sprint4`. ADR-001 (dual-layer LLM⊥Python)
+**materializado**: `llm_bridge.py` (100% cov) cruza a fronteira operacionalmente
+em 4.C; Hello SOC roda end-to-end com átomos reais em 4.D (critério Popperiano-
+mestre do sprint — `RecordedProvider` em CI, zero LLM real). I-DASH **mecanizado
+N2** em 4.E (`build_dashboard.py` + gate `--check`). Publicação resequenciada
+para S7/S8 (ADR-008).
 
-Fases: 4.A ADR-008 (regra de ordenação publicação) · 4.B api/llm-bridge.md ·
-4.C llm_bridge.py · 4.D hello-soc · 4.E build_dashboard · 4.F merge+tag `v0.5.0`.
+6 fases (4.A-4.F), 6 PRs (#19-#23 + close), CI 3-matriz verde em cada (D2).
+Suite ~368 testes, cov global 98.90%, 13 módulos. Narrativa completa em
+`docs/WAL_HUMANO_SPRINT4.md`.
 
-Cursor de partida Sprint 4: `FROM 6818856` (HEAD main pós-merge 3.G).
+## Próximo gate — Sprint 5 (Robustez)
+
+Sprint 4 demonstrou o framework. Sprint 5 endurece-o: `writer.py` TD-001 (branch
+error-recovery 89-94) → comando `reconcile` (recupera estado divergente disco↔WAL)
+→ per-atom locking (fecha FM-01/TD-004). Sem publicação. Detalhe no roadmap v3
+(S5 = v0.6.0) e em ADR-008.
+
+Cursor de partida Sprint 4: `FROM 6818856` (HEAD main pós-merge 3.G) →
+THIS Sprint 4 fechado → GOTO Sprint 5 (robustez).
 
 ### Roadmap v3 (S4-S8) — resequenciado por ADR-008
 
@@ -169,6 +181,7 @@ ADR-005 (timing original Sprint-4) **superseded by ADR-008** (parcial: mecanismo
 | `dashboard.html` | Painel estático offline — programa completo Sprint 0→6 (5W1H + expectativa + mapa de produção navegável por Sprint) + timeline + dívidas + invariante I-DASH | vigente |
 | `WAL_HUMANO.md` | WAL traduzido para narrativa humana — Sprint 2 (decisões + correções + lições) | vigente |
 | `WAL_HUMANO_SPRINT3.md` | WAL humano do Sprint 3 — fases 3.A-3.G, incidente autogate (I8-ext), furo D7 (L-orq-14), FM-10 closure, prova adversarial, honestidade do executor | vigente |
+| `WAL_HUMANO_SPRINT4.md` | WAL humano do Sprint 4 — fases 4.A-4.F, resequenciamento de publicação (ADR-008), ADR-001 materializado (4.C), Hello SOC end-to-end (4.D), I-DASH N2 (4.E), honestidade sustentada (I1) | vigente |
 | `DOC-SELF-001-atomic-dag-self.md` | Documentação auto-referente — Atomic-DAG explicado *como* um ATÔMICO do próprio Atomic-DAG (9 blocos Template Master, frontmatter válido, cursor I-WAL, ancorado em main@1d6217e); demonstra D4 por instanciação; ponte pedagógica para Sprint 6 / US-07 (meta-uso) — quando `.atomic-dag/state.json` gerenciar este arquivo como instância operacional | vigente, **artefato pedagógico** |
 
 ### Knowledge base (`knowledge/`)
